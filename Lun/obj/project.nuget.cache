@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "YV4uEAVuvjU49BHRG3QsP/GyZe6MIBXFv05pLnf/HGWQYUqd424LdfdjmLC3IW+t5Jd8tTKlzxh3UnOAflrBcA==",
+  "success": true,
+  "projectFilePath": "D:\\Projeto\\Lun Lib\\Lun\\Lun.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Pichau\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512",
+    "C:\\Users\\Pichau\\.nuget\\packages\\messagepack\\2.3.85\\messagepack.2.3.85.nupkg.sha512",
+    "C:\\Users\\Pichau\\.nuget\\packages\\messagepack.annotations\\2.3.85\\messagepack.annotations.2.3.85.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,71 @@
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.csproj.AssemblyReference.cache
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfoInputs.cache
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfo.cs
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.ImplicitNamespaceImports.cs
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.csproj.CoreCompileInputs.cache
+D:\Games\Projetos\Lun\Lun\bin\Debug\net6.0\Lun.deps.json
+D:\Games\Projetos\Lun\Lun\bin\Debug\net6.0\Lun.dll
+D:\Games\Projetos\Lun\Lun\bin\Debug\net6.0\ref\Lun.dll
+D:\Games\Projetos\Lun\Lun\bin\Debug\net6.0\Lun.pdb
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.dll
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\ref\Lun.dll
+D:\Games\Projetos\Lun\Lun\obj\Debug\net6.0\Lun.pdb
+D:\Estudo\Lun\Lun\bin\Debug\net6.0\Lun.deps.json
+D:\Estudo\Lun\Lun\bin\Debug\net6.0\Lun.dll
+D:\Estudo\Lun\Lun\bin\Debug\net6.0\ref\Lun.dll
+D:\Estudo\Lun\Lun\bin\Debug\net6.0\Lun.pdb
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.csproj.AssemblyReference.cache
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfoInputs.cache
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfo.cs
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.ImplicitNamespaceImports.cs
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.csproj.CoreCompileInputs.cache
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.dll
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\ref\Lun.dll
+D:\Estudo\Lun\Lun\obj\Debug\net6.0\Lun.pdb
+D:\Estudos\Lun\Lun\Lun\bin\Debug\net6.0\Lun.deps.json
+D:\Estudos\Lun\Lun\Lun\bin\Debug\net6.0\Lun.dll
+D:\Estudos\Lun\Lun\Lun\bin\Debug\net6.0\ref\Lun.dll
+D:\Estudos\Lun\Lun\Lun\bin\Debug\net6.0\Lun.pdb
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.csproj.AssemblyReference.cache
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfoInputs.cache
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfo.cs
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.ImplicitNamespaceImports.cs
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.csproj.CoreCompileInputs.cache
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.dll
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\ref\Lun.dll
+D:\Estudos\Lun\Lun\Lun\obj\Debug\net6.0\Lun.pdb
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfoInputs.cache
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.AssemblyInfo.cs
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.csproj.CoreCompileInputs.cache
+D:\Estudos\Lun\Lun\bin\Debug\net6.0\Lun.deps.json
+D:\Estudos\Lun\Lun\bin\Debug\net6.0\Lun.dll
+D:\Estudos\Lun\Lun\bin\Debug\net6.0\ref\Lun.dll
+D:\Estudos\Lun\Lun\bin\Debug\net6.0\Lun.pdb
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.dll
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\ref\Lun.dll
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.pdb
+D:\Estudos\Lun\Build\Lun\Debug\net6.0\Lun.deps.json
+D:\Estudos\Lun\Build\Lun\Debug\net6.0\Lun.dll
+D:\Estudos\Lun\Build\Lun\Debug\net6.0\ref\Lun.dll
+D:\Estudos\Lun\Build\Lun\Debug\net6.0\Lun.pdb
+D:\Estudos\Lun\Lun\obj\Debug\net6.0\Lun.csproj.AssemblyReference.cache
+D:\Estudos\Lun\Build\Debug\net6.0\Lun.deps.json
+D:\Estudos\Lun\Build\Debug\net6.0\Lun.dll
+D:\Estudos\Lun\Build\Debug\net6.0\ref\Lun.dll
+D:\Estudos\Lun\Build\Debug\net6.0\Lun.pdb
+D:\Projeto\Lun Lib\Build\Lun\Debug\net6.0\Lun.deps.json
+D:\Projeto\Lun Lib\Build\Lun\Debug\net6.0\Lun.dll
+D:\Projeto\Lun Lib\Build\Lun\Debug\net6.0\ref\Lun.dll
+D:\Projeto\Lun Lib\Build\Lun\Debug\net6.0\Lun.pdb
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.csproj.AssemblyReference.cache
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.AssemblyInfoInputs.cache
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.AssemblyInfo.cs
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.csproj.CoreCompileInputs.cache
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.dll
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\ref\Lun.dll
+D:\Projeto\Lun Lib\Lun\obj\Debug\net6.0\Lun.pdb

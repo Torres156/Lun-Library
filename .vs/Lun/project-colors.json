@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "8079d116-731a-4faf-add4-269c3889191e": {
+      "ProjectGuid": "8079d116-731a-4faf-add4-269c3889191e",
+      "DisplayName": "Lun.MapEditor",
+      "ColorIndex": 0
+    },
+    "d6631f9a-3019-4272-8451-1afcb8876791": {
+      "ProjectGuid": "d6631f9a-3019-4272-8451-1afcb8876791",
+      "DisplayName": "Lun",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Arquivos Diversos",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 2
+}
