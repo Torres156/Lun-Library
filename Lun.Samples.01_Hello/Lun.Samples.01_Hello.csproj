@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Lun.Samples._01_Hello</RootNamespace>
+    <LangVersion>preview</LangVersion>
+    <StartupObject>Lun.Samples._01_Hello.Program</StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Build\Lun.Samples\Lun.Samples.01_Hello</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lun\Lun.csproj" />
+  </ItemGroup>
+
+</Project>

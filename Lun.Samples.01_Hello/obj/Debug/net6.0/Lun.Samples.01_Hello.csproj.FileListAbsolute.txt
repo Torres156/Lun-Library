@@ -1,0 +1,16 @@
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.exe
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.deps.json
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.runtimeconfig.json
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\ref\Lun.Samples.01_Hello.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.pdb
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.csproj.AssemblyReference.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.AssemblyInfoInputs.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.AssemblyInfo.cs
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.csproj.CoreCompileInputs.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.csproj.CopyComplete
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\ref\Lun.Samples.01_Hello.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.pdb
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.genruntimeconfig.cache

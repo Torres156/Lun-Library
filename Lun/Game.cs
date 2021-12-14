@@ -134,7 +134,7 @@ namespace Lun
         static void CreateWindow()
         {
             var video = new VideoMode((uint)WindowSize.x, (uint)WindowSize.y);
-            var context = new ContextSettings(32, 8, AntiAliasing, 4, 6, ContextSettings.Attribute.Debug, false);
+            var context = new ContextSettings(32, 8, AntiAliasing);
             if (!WindowFullscreen)
                 Window = new RenderWindow(video, WindowTitle, WindowCanResize ? Styles.Close | Styles.Resize : Styles.Close, context);
             else
