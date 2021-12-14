@@ -1,6 +1,8 @@
 # Lun-Library
 Lun is a library for Game 2D and UI development, its structure uses SFML 2.5 for graphical rendering.
 
+##
+
 ## 💻 Requirements
 Before using, it is necessary to verify the requeriments:
 * You have installed version `<.NET 6 / Visual Studio 2019 / Visual Studio 2022>`
@@ -20,7 +22,7 @@ dotnet add package CSFML.Redist --version 2.5.1
 4. Start coding!
 ```csharp
 global using Lun;
-global static using Lun.LunEngine;
+global using static Lun.LunEngine;
 using Lun.Controls;
 
 namespace HelloWorld
