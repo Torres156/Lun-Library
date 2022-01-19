@@ -1,0 +1,16 @@
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.03_Textures\net6.0\Lun.Samples.03_Textures.exe
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.03_Textures\net6.0\Lun.Samples.03_Textures.deps.json
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.03_Textures\net6.0\Lun.Samples.03_Textures.runtimeconfig.json
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.03_Textures\net6.0\Lun.Samples.03_Textures.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.03_Textures\net6.0\ref\Lun.Samples.03_Textures.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.03_Textures\net6.0\Lun.Samples.03_Textures.pdb
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.csproj.AssemblyReference.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.AssemblyInfoInputs.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.AssemblyInfo.cs
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.csproj.CoreCompileInputs.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.csproj.CopyComplete
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\ref\Lun.Samples.03_Textures.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.pdb
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.03_Textures\obj\Debug\net6.0\Lun.Samples.03_Textures.genruntimeconfig.cache
