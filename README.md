@@ -18,6 +18,12 @@ Before using, it is necessary to verify the requeriments:
 * Operating System using `<Window / Linux / Mac>`
 
 ## Using Lun-Library
+### Nuget package
+1. Add Lun-Library to your project with Nuget.
+```
+Install-Package LunLibrary -Version 1.0.0
+```
+### Clone this repository
 1. Download/Clone this repository.
 
 2. Add Lun-Library/Lun.csproj to your project as an existing project.
@@ -26,8 +32,7 @@ Before using, it is necessary to verify the requeriments:
 ```
 dotnet add package CSFML.Redist --version 2.5.1
 ```
-
-4. Start coding!
+### Start coding!
 ```csharp
 global using Lun;
 global using static Lun.LunEngine;
