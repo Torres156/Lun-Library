@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+	  <PackageId>Lun Library</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>Torres156</Authors>
+	  <Company>Torres156</Company>
+	  <PackageDescription>This package adds an Lun Library!</PackageDescription>
+	  <RepositoryUrl>https://github.com/Torres156/Lun-Library</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,6 +20,7 @@
     <Nullable>disable</Nullable>
     <BaseOutputPath>..\Build\Lun\</BaseOutputPath>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
