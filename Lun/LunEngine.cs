@@ -433,6 +433,9 @@ namespace Lun
             target.Draw(cir);
         }
 
+        public static void DrawCircle(Vector2 position, float radius, Color fillColor)
+            => DrawCircle(position, radius, fillColor, 0, Color.Transparent);
+
         /// <summary>
         /// Comprimento do Texto
         /// </summary>

@@ -7,9 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Lun
 {
-    using MessagePack;
     using SFML.System;
-    [MessagePackObject(true)]
     public struct Vector2 : IEquatable<Vector2>
     {
         public float x;

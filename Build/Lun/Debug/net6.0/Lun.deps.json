@@ -8,8 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Lun/1.0.0": {
         "dependencies": {
-          "CSFML.Redist": "2.5.1",
-          "MessagePack": "2.3.85"
+          "CSFML.Redist": "2.5.1"
         },
         "runtime": {
           "Lun.dll": {}
@@ -308,25 +307,6 @@
             "fileVersion": "0.0.0.0"
           }
         }
-      },
-      "MessagePack/2.3.85": {
-        "dependencies": {
-          "MessagePack.Annotations": "2.3.85"
-        },
-        "runtime": {
-          "lib/net5.0/MessagePack.dll": {
-            "assemblyVersion": "2.3.0.0",
-            "fileVersion": "2.3.85.30390"
-          }
-        }
-      },
-      "MessagePack.Annotations/2.3.85": {
-        "runtime": {
-          "lib/netstandard2.0/MessagePack.Annotations.dll": {
-            "assemblyVersion": "2.3.0.0",
-            "fileVersion": "2.3.85.30390"
-          }
-        }
       }
     }
   },
@@ -342,20 +322,6 @@
       "sha512": "sha512-4ooafKmaMTX3AacHS6OkoDivxcz4IRiOegkvrIL8+b9fPZIlhMVPFVBVn2C6VgceoxsAwSyO8bkvPgF0HhfmgQ==",
       "path": "csfml.redist/2.5.1",
       "hashPath": "csfml.redist.2.5.1.nupkg.sha512"
-    },
-    "MessagePack/2.3.85": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-wOabnqkrXp7oeEYLY4Kd0m0eT4falJQukqvErfz5Y4FKKo9mSQQ1+rMxx9mapF2el+P0XQxiZOBKFm+oCvu0aw==",
-      "path": "messagepack/2.3.85",
-      "hashPath": "messagepack.2.3.85.nupkg.sha512"
-    },
-    "MessagePack.Annotations/2.3.85": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-2GCYZ9qgNS5Og0tiqfhWRhcfDZI/iRi8t07R0fNic1HthMMRfWxWOKDIBhtMA1RwZM4BuRsmJXUgk3evyisb1w==",
-      "path": "messagepack.annotations/2.3.85",
-      "hashPath": "messagepack.annotations.2.3.85.nupkg.sha512"
     }
   }
 }

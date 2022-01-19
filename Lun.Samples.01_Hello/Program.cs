@@ -13,7 +13,7 @@ namespace Lun.Samples._01_Hello
             LoadFont("consola.ttf");
 
             // Window Settings for Start
-            Game.WindowTitle = "Lun Engine";              // Window Title
+            Game.WindowTitle = "Lun Library";             // Window Title
             Game.WindowSizeMin = new Vector2(1024, 600);  // Minimun Size for Window resize
             Game.WindowSize = new Vector2(1024, 600);     // Start Size for Window
             Game.WindowCanResize = true;                  // Window can resized

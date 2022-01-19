@@ -62,7 +62,7 @@ namespace Lun
             CreateWindow();
             HandleEvents();
 
-            DefaultCamera = new Camera2D(WindowSize);            
+            DefaultCamera = new Camera2D(WindowSize);
 
             Running = true;
             GameLoop();
@@ -70,53 +70,50 @@ namespace Lun
 
         static void GameLoop()
         {
-            long timerDelay = 0, timerNew = 0, timerOld = 0;
+            long timerNew = 0, timerOld = 0;
             long timerFps = 0, timerAnimation = 0;
             int countFPS = 0;
             float accumulate = 0;
 
-            GCSettings.LatencyMode = GCLatencyMode.LowLatency;            
+            GCSettings.LatencyMode = GCLatencyMode.LowLatency;
 
-            timerNew = Environment.TickCount64;            
+
             while (Running)
             {
-                if (Environment.TickCount64 > timerDelay)
+                timerOld = timerNew;
+                timerNew = Environment.TickCount64;
+
+                if (Environment.TickCount64 > timerAnimation)
                 {
-                    timerOld = timerNew;
-                    timerNew = Environment.TickCount64;
-
-                    if (Environment.TickCount64 > timerAnimation)
-                    {
-                        TextBox.s_animation = !TextBox.s_animation;
-                        timerAnimation = Environment.TickCount64 + 250;
-                    }
-
-                    Sound.ProcessSounds();
-
-                    var delta = (timerNew - timerOld) / 1000f;
-                    accumulate += delta;
-                    while(accumulate >= FixedPhysicTime)
-                    {
-                        accumulate -= FixedPhysicTime;
-                        Scene?.FixedUpdate();
-                    }
-                    Scene?.Update();
-                    OnUpdate?.Invoke();
-
-                    Window.DispatchEvents();
-
-                    BeginRender(Window);
-
-                    ClearColor(BackgroundColor);
-
-                    BeginCamera(DefaultCamera);
-                    Scene?.Draw();
-                    EndCamera();
-
-                    EndRender();
-
-                    timerDelay = Environment.TickCount64 + 1;
+                    TextBox.s_animation = !TextBox.s_animation;
+                    timerAnimation = Environment.TickCount64 + 250;
                 }
+
+                Sound.ProcessSounds();
+
+                var delta = (timerNew - timerOld) / 1000f;
+                accumulate += delta;
+                while (accumulate >= FixedPhysicTime)
+                {
+                    accumulate -= FixedPhysicTime;
+                    Scene?.FixedUpdate();
+                }
+                Scene?.Update();
+                OnUpdate?.Invoke();
+
+                Window.DispatchEvents();
+
+                BeginRender(Window);
+
+                ClearColor(BackgroundColor);
+
+                BeginCamera(DefaultCamera);
+                Scene?.Draw();
+                EndCamera();
+
+                EndRender();
+
+
 
                 countFPS++;
                 if (Environment.TickCount64 > timerFps)
@@ -145,7 +142,7 @@ namespace Lun
 
             Window.SetActive(false);
             Window.SetFramerateLimit(0);
-            Window.SetVerticalSyncEnabled(false);            
+            Window.SetVerticalSyncEnabled(false);
         }
 
         static void HandleEvents()
@@ -198,9 +195,9 @@ namespace Lun
         }
 
         private static void Window_Closed(object sender, EventArgs e)
-        {            
+        {
             OnClosed?.Invoke();
-            Running = false;    
+            Running = false;
         }
 
         private static void Window_Resized(object sender, SizeEventArgs e)
@@ -226,7 +223,7 @@ namespace Lun
                 HandleEvents();
             }
 
-            WindowSize = (Vector2)Window.Size;            
+            WindowSize = (Vector2)Window.Size;
             Scene?.Resize();
             OnResize?.Invoke();
             DefaultCamera.Size = WindowSize;
@@ -239,7 +236,7 @@ namespace Lun
             {
                 Window.Close();
                 Window = new RenderWindow(VideoMode.DesktopMode, WindowTitle, Styles.Fullscreen,
-                    new ContextSettings(32,0, AntiAliasing));
+                    new ContextSettings(32, 0, AntiAliasing));
                 Window.SetVerticalSyncEnabled(false);
                 HandleEvents();
                 WindowFullscreen = true;
@@ -260,7 +257,7 @@ namespace Lun
         public static void SetScene<T>(params object[] args) where T : SceneBase
         {
             Scene?.UnloadContent();
-            Scene = (T)Activator.CreateInstance(typeof(T), args) ;
+            Scene = (T)Activator.CreateInstance(typeof(T), args);
             Scene.LoadContent();
         }
 

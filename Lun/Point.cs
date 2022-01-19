@@ -7,10 +7,8 @@ using System.Runtime.InteropServices;
 
 namespace Lun
 {
-    using MessagePack;
     using SFML.System;
     [StructLayout(LayoutKind.Sequential)]
-    [MessagePackObject(true)]
     public struct Point : IEquatable<Point>
     {
         public int x;

@@ -239,33 +239,11 @@
           }
         }
       },
-      "MessagePack/2.3.85": {
-        "type": "package",
-        "dependencies": {
-          "MessagePack.Annotations": "2.3.85"
-        },
-        "compile": {
-          "lib/net5.0/MessagePack.dll": {}
-        },
-        "runtime": {
-          "lib/net5.0/MessagePack.dll": {}
-        }
-      },
-      "MessagePack.Annotations/2.3.85": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/MessagePack.Annotations.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/MessagePack.Annotations.dll": {}
-        }
-      },
       "Lun/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "CSFML.Redist": "2.5.1",
-          "MessagePack": "2.3.85"
+          "CSFML.Redist": "2.5.1"
         },
         "compile": {
           "bin/placeholder/Lun.dll": {}
@@ -347,40 +325,6 @@
         "sfml-icon.png"
       ]
     },
-    "MessagePack/2.3.85": {
-      "sha512": "wOabnqkrXp7oeEYLY4Kd0m0eT4falJQukqvErfz5Y4FKKo9mSQQ1+rMxx9mapF2el+P0XQxiZOBKFm+oCvu0aw==",
-      "type": "package",
-      "path": "messagepack/2.3.85",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE",
-        "lib/net5.0/MessagePack.dll",
-        "lib/net5.0/MessagePack.xml",
-        "lib/netcoreapp2.1/MessagePack.dll",
-        "lib/netcoreapp2.1/MessagePack.xml",
-        "lib/netcoreapp3.1/MessagePack.dll",
-        "lib/netcoreapp3.1/MessagePack.xml",
-        "lib/netstandard2.0/MessagePack.dll",
-        "lib/netstandard2.0/MessagePack.xml",
-        "messagepack.2.3.85.nupkg.sha512",
-        "messagepack.nuspec"
-      ]
-    },
-    "MessagePack.Annotations/2.3.85": {
-      "sha512": "2GCYZ9qgNS5Og0tiqfhWRhcfDZI/iRi8t07R0fNic1HthMMRfWxWOKDIBhtMA1RwZM4BuRsmJXUgk3evyisb1w==",
-      "type": "package",
-      "path": "messagepack.annotations/2.3.85",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE",
-        "lib/netstandard2.0/MessagePack.Annotations.dll",
-        "lib/netstandard2.0/MessagePack.Annotations.xml",
-        "messagepack.annotations.2.3.85.nupkg.sha512",
-        "messagepack.annotations.nuspec"
-      ]
-    },
     "Lun/1.0.0": {
       "type": "project",
       "path": "../Lun/Lun.csproj",
@@ -393,8 +337,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Pichau\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Users\\Pichau\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -405,13 +348,9 @@
       "packagesPath": "C:\\Users\\Pichau\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Pichau\\Desktop\\Projetos\\Github\\Lun\\Lun-Library\\Lun.Samples.01_Hello\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-      ],
       "configFilePaths": [
         "C:\\Users\\Pichau\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"

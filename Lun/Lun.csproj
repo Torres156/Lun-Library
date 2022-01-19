@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <PackageReference Include="CSFML.Redist" Version="2.5.1" />
-    <PackageReference Include="MessagePack" Version="2.3.85" />
   </ItemGroup>
 
 </Project>
