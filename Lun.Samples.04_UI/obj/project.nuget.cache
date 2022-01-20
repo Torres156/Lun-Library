@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "NrZsDjKMeHzbDJWcxMjCM2uaHAaJRQQSrp+iCSDQiMGb7S1rM3t66EpfHz6AG/Z7YMAXbI+C9ENdpLmSnVkeVg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Pichau\\Desktop\\Projetos\\Github\\Lun\\Lun-Library\\Lun.Samples.04_UI\\Lun.Samples.04_UI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Pichau\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512"
+  ],
+  "logs": []
+}

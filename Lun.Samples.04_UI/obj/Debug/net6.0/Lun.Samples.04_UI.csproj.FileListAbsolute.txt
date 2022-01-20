@@ -1,0 +1,16 @@
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.04_UI\net6.0\Lun.Samples.04_UI.exe
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.04_UI\net6.0\Lun.Samples.04_UI.deps.json
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.04_UI\net6.0\Lun.Samples.04_UI.runtimeconfig.json
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.04_UI\net6.0\Lun.Samples.04_UI.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.04_UI\net6.0\ref\Lun.Samples.04_UI.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Build\Lun.Samples\Lun.Samples.04_UI\net6.0\Lun.Samples.04_UI.pdb
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.csproj.AssemblyReference.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.AssemblyInfoInputs.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.AssemblyInfo.cs
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.csproj.CoreCompileInputs.cache
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.csproj.CopyComplete
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\ref\Lun.Samples.04_UI.dll
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.pdb
+C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun.Samples.04_UI\obj\Debug\net6.0\Lun.Samples.04_UI.genruntimeconfig.cache

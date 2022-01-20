@@ -209,7 +209,7 @@ namespace Lun.Controls
             {
                 modeResize = false;
                 Game.Scene.priority = null;
-                OnResizeChanged.Invoke(this);
+                OnResizeChanged?.Invoke(this);
                 return true;
             }
 
