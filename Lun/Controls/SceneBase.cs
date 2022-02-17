@@ -71,7 +71,7 @@
         /// </summary>
         public virtual void Update()
         {
-            if (isAlert && Environment.TickCount64 > alert_timer)
+            if (isAlert && TickCount > alert_timer)
             {
                 alert_message = "";
                 alert_timer = 0;
@@ -153,7 +153,7 @@
         public void Alert(string message)
         {
             alert_message = message;
-            alert_timer = Environment.TickCount64 + 3000;
+            alert_timer = TickCount + 3000;
         }
 
         /// <summary>

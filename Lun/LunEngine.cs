@@ -813,5 +813,8 @@ namespace Lun
             currentCamera = lastCam;
             cams.Remove(lastCam);
         }
+
+        public static int TickCount
+            => Environment.TickCount < 0 ? Environment.TickCount & int.MaxValue : Environment.TickCount;
     }
 }

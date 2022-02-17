@@ -21,3 +21,15 @@ C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun\obj\Release\net6.0\L
 C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun\obj\Release\net6.0\Lun.dll
 C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun\obj\Release\net6.0\ref\Lun.dll
 C:\Users\Pichau\Desktop\Projetos\Github\Lun\Lun-Library\Lun\obj\Release\net6.0\Lun.pdb
+D:\Curso\Lun\Build\Lun\Release\net6.0\Lun.deps.json
+D:\Curso\Lun\Build\Lun\Release\net6.0\Lun.dll
+D:\Curso\Lun\Build\Lun\Release\net6.0\ref\Lun.dll
+D:\Curso\Lun\Build\Lun\Release\net6.0\Lun.pdb
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.csproj.AssemblyReference.cache
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.AssemblyInfoInputs.cache
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.AssemblyInfo.cs
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.csproj.CoreCompileInputs.cache
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.dll
+D:\Curso\Lun\Lun\obj\Release\net6.0\ref\Lun.dll
+D:\Curso\Lun\Lun\obj\Release\net6.0\Lun.pdb

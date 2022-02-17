@@ -70,23 +70,21 @@ namespace Lun
 
         static void GameLoop()
         {
-            long timerNew = 0, timerOld = 0;
-            long timerFps = 0, timerAnimation = 0;
+            int timerNew = TickCount, timerOld = 0;
+            int timerFps = 0, timerAnimation = 0;
             int countFPS = 0;
             float accumulate = 0;
-
-            GCSettings.LatencyMode = GCLatencyMode.LowLatency;
 
 
             while (Running)
             {
                 timerOld = timerNew;
-                timerNew = Environment.TickCount64;
+                timerNew = TickCount;
 
-                if (Environment.TickCount64 > timerAnimation)
+                if (TickCount > timerAnimation)
                 {
                     TextBox.s_animation = !TextBox.s_animation;
-                    timerAnimation = Environment.TickCount64 + 250;
+                    timerAnimation = TickCount + 250;
                 }
 
                 Sound.ProcessSounds();
@@ -114,13 +112,12 @@ namespace Lun
                 EndRender();
 
 
-
                 countFPS++;
-                if (Environment.TickCount64 > timerFps)
+                if (TickCount > timerFps)
                 {
                     FPS = countFPS;
                     countFPS = 0;
-                    timerFps = Environment.TickCount64 + 1000;
+                    timerFps = TickCount + 1000;
                 }
             }
             Sound.StopSounds();

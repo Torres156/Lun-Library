@@ -239,9 +239,9 @@
           }
         }
       },
-      "LunLibrary/1.0.0": {
+      "LunLibrary/1.0.1": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
+        "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
           "CSFML.Redist": "2.5.1"
         },
@@ -325,7 +325,7 @@
         "sfml-icon.png"
       ]
     },
-    "LunLibrary/1.0.0": {
+    "LunLibrary/1.0.1": {
       "type": "project",
       "path": "../Lun/Lun.csproj",
       "msbuildProject": "../Lun/Lun.csproj"
@@ -333,7 +333,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "LunLibrary >= 1.0.0"
+      "LunLibrary >= 1.0.1"
     ]
   },
   "packageFolders": {

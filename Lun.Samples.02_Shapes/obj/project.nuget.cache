@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "0TMuz6rwIt84xXio2CgZpTXh0qgmIJ7Ww6WJ0Vv/pVKTv/5hQInktlATIwAgN8OBoWIDC03Aei/xnyJ4DkvAeA==",
+  "dgSpecHash": "xScHDZjvW5FgvD2pNm1fpbygoD44OF26uqGK4hV+fFxa0TNtpjtJBRIADeu6PyV+8lAff9a4SBY6W5znDL9fcA==",
   "success": true,
   "projectFilePath": "D:\\Curso\\Lun\\Lun.Samples.02_Shapes\\Lun.Samples.02_Shapes.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Gustavo\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512",
-    "C:\\Users\\Gustavo\\.nuget\\packages\\lunlibrary\\1.0.0\\lunlibrary.1.0.0.nupkg.sha512"
+    "C:\\Users\\Gustavo\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512"
   ],
   "logs": []
 }

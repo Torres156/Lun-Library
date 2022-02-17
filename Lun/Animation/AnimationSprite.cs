@@ -71,10 +71,10 @@ namespace Lun.Animation
                 RenderStates.Default);
 
             // Processa os frames
-            if (Environment.TickCount64 > frame_currenttimer)
+            if (TickCount > frame_currenttimer)
             {
                 frame_current++;
-                frame_currenttimer = Environment.TickCount64 + frame_timer;
+                frame_currenttimer = TickCount + frame_timer;
             }
         }
 

@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "Lun/1.0.0": {
+      "Lun/1.0.1": {
         "dependencies": {
           "CSFML.Redist": "2.5.1"
         },
@@ -311,7 +311,7 @@
     }
   },
   "libraries": {
-    "Lun/1.0.0": {
+    "Lun/1.0.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
