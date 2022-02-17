@@ -1,4 +1,5 @@
 # Lun-Library
+Version `<1.0.2>`
 Lun is a library for Game 2D and UI development, its structure uses SFML 2.5 for graphical rendering.
 
 ## Screenshots
@@ -23,7 +24,7 @@ Before using, it is necessary to verify the requeriments:
 ### Nuget package
 1. Add Lun-Library to your project with Nuget.
 ```
-Install-Package LunLibrary -Version 1.0.1
+Install-Package LunLibrary -Version 1.0.2
 ```
 ### Clone this repository
 1. Download/Clone this repository.
