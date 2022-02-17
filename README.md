@@ -15,7 +15,7 @@ Lun is a library for Game 2D and UI development, its structure uses SFML 2.5 for
 
 ## 💻 Requirements
 Before using, it is necessary to verify the requeriments:
-* You have installed `<.NET 6 / Visual Studio 2019 / Visual Studio 2022>`
+* You have installed `<.NET Standard 2.1 / Visual Studio 2019 / Visual Studio 2022>`
 * You are using `<C# 10.0>`
 * Operating System using `<Window / Linux / Mac>`
 
