@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "L/mG4vBbRyJxB6n4OXIoJ4qLqEkaNQYxEyfKecfLmUILs6nVLPo/4F5hJ0bLH5GetfLkSC4JJl/bN2rbpgxTOQ==",
+  "dgSpecHash": "/Jqnn/dUvr/cgly+q6iNkmvfuMfSEcRH/TWRDMf3z7vxM3eVSvw1T8eDQiGyL5gK7HCXqijdNFWZ1RbDi02l8g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Pichau\\Desktop\\Projetos\\Github\\Lun\\Lun-Library\\Lun.Samples.01_Hello\\Lun.Samples.01_Hello.csproj",
+  "projectFilePath": "D:\\Curso\\Lun\\Lun.Samples.01_Hello\\Lun.Samples.01_Hello.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Pichau\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512"
+    "C:\\Users\\Gustavo\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512",
+    "C:\\Users\\Gustavo\\.nuget\\packages\\lunlibrary\\1.0.0\\lunlibrary.1.0.0.nupkg.sha512"
   ],
   "logs": []
 }

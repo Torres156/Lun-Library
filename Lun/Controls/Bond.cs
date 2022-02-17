@@ -220,7 +220,7 @@ namespace Lun.Controls
         {
             if (controls.Any(i => (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index))
             {
-                (controls.Find(i => (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox).SetFocus();
+                (controls.Find(i => (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox)?.SetFocus();
                 return;
             }
 
