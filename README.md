@@ -23,7 +23,7 @@ Before using, it is necessary to verify the requeriments:
 ### Nuget package
 1. Add Lun-Library to your project with Nuget.
 ```
-Install-Package LunLibrary -Version 1.0.0
+Install-Package LunLibrary -Version 1.0.1
 ```
 ### Clone this repository
 1. Download/Clone this repository.
