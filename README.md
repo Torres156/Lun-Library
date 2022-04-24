@@ -1,5 +1,5 @@
 # Lun-Library
-Version `<1.0.2>`<br>
+Version `<1.0.2>`
 Lun is a library for Game 2D and UI development, its structure uses SFML 2.5 for graphical rendering.
 
 ## Screenshots
