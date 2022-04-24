@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "DCmGDGPd7qpanpZ5t1l9vlD0/ou9Kc31XppBmaspiVs1S7h0B4TRcE/E6RsLn7aqiD0OvFcTfTbSgI9IfGQaEg==",
+  "dgSpecHash": "yURuwWeg1jZ5xD8uuhGRmGCk6ZA0qA27FN2W7K3XGL71Z79Ujs49PYjCOi6opuKO8OsB657d8HR2QzDf3KqbHA==",
   "success": true,
   "projectFilePath": "D:\\Curso\\Lun\\Lun.Samples.03_Textures\\Lun.Samples.03_Textures.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Gustavo\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512",
-    "C:\\Users\\Gustavo\\.nuget\\packages\\lunlibrary\\1.0.1\\lunlibrary.1.0.1.nupkg.sha512"
+    "C:\\Users\\Gustavo\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512"
   ],
   "logs": []
 }

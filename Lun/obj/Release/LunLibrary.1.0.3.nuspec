@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>LunLibrary</id>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
     <authors>Torres156</authors>
     <description>This package adds an Lun Library!</description>
     <repository url="https://github.com/Torres156/Lun-Library" />

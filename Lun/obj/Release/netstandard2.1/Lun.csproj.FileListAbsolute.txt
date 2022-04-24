@@ -1,0 +1,10 @@
+D:\Curso\Lun\Build\Lun\Release\netstandard2.1\Lun.deps.json
+D:\Curso\Lun\Build\Lun\Release\netstandard2.1\Lun.dll
+D:\Curso\Lun\Build\Lun\Release\netstandard2.1\Lun.pdb
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.csproj.AssemblyReference.cache
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.GeneratedMSBuildEditorConfig.editorconfig
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.AssemblyInfoInputs.cache
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.AssemblyInfo.cs
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.csproj.CoreCompileInputs.cache
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.dll
+D:\Curso\Lun\Lun\obj\Release\netstandard2.1\Lun.pdb
