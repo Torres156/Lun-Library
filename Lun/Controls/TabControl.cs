@@ -48,6 +48,17 @@ namespace Lun.Controls
         }
         int _selectIndex = 0;
 
+        public new Vector2 Size
+        {
+            get => base.Size;
+            set
+            {
+                base.Size = value;
+                foreach (var i in Items.Values)
+                    i.Size = new Vector2(Size.x, Size.y - 25);
+            }
+        }
+
         public event HandleCommon OnSelectIndex;
 
         /// <summary>
