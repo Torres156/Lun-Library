@@ -340,8 +340,8 @@
 
         public override void Resize()
         {
-            base.Resize();
             Size = Game.WindowSize;
+            base.Resize();                    
         }
 
         public bool HasPriority()

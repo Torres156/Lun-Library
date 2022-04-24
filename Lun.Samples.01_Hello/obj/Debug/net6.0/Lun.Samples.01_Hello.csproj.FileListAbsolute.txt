@@ -26,7 +26,7 @@ D:\Curso\Lun\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.
 D:\Curso\Lun\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.deps.json
 D:\Curso\Lun\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.runtimeconfig.json
 D:\Curso\Lun\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.dll
-D:\Curso\Lun\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\ref\Lun.Samples.01_Hello.dll
 D:\Curso\Lun\Build\Lun.Samples\Lun.Samples.01_Hello\net6.0\Lun.Samples.01_Hello.pdb
 D:\Curso\Lun\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.csproj.CopyComplete
 D:\Curso\Lun\Lun.Samples.01_Hello\obj\Debug\net6.0\Lun.Samples.01_Hello.genruntimeconfig.cache
+D:\Curso\Lun\Lun.Samples.01_Hello\obj\Debug\net6.0\refint\Lun.Samples.01_Hello.dll
