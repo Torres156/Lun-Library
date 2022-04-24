@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31911.196
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lun", "Lun\Lun.csproj", "{D6631F9A-3019-4272-8451-1AFCB8876791}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{69302ACA-D7B9-4ADC-B4BE-AD4E8EDBA2ED}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{AF6233DC-A7E8-4E27-95D6-BCC1904063FF}"
@@ -18,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lun.Samples.02_Shapes", "Lu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lun.Samples.03_Textures", "Lun.Samples.03_Textures\Lun.Samples.03_Textures.csproj", "{BE8977C2-7ED1-4B65-A040-104AB3285207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lun.Samples.04_UI", "Lun.Samples.04_UI\Lun.Samples.04_UI.csproj", "{CA8C42A5-9B32-4CD5-9B3E-F5ACA72089A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lun.Samples.04_UI", "Lun.Samples.04_UI\Lun.Samples.04_UI.csproj", "{CA8C42A5-9B32-4CD5-9B3E-F5ACA72089A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
