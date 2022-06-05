@@ -55,6 +55,7 @@ namespace Lun
         public static event Action OnUpdate;
         public static event Action OnClosed;
         public static event Action OnResize;
+        public static event Action OnDraw;
 
 
         public static void Run()
@@ -108,6 +109,8 @@ namespace Lun
                 BeginCamera(DefaultCamera);
                 Scene?.Draw();
                 EndCamera();
+
+                OnDraw?.Invoke();
 
                 EndRender();
 
