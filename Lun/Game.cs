@@ -35,10 +35,10 @@ namespace Lun
         public static Vector2 MousePosition { get; private set; }                           // Posição do mouse
         public static readonly string Path = AppDomain.CurrentDomain.BaseDirectory + "/";   // Diretório do jogo
         public static RenderWindow Window { get; private set; }                             // Dispositivo gráfico para janela
-        public static float FixedPhysicTime = 1f / 60f;                                     // Tempo fixo para processamento físico
+        public static uint FixedPhysicTime = 60;                                            // Tempo fixo para processamento físico
         public static Color BackgroundColor = Color.CornflowerBlue;                         // Cor de fundo
         public static SceneBase Scene { get; private set; }                                 // Cena atual
-        public static uint AntiAliasing = 8;
+        public static uint AntiAliasing = 8;        
 
 
         // Configurações de Janela
@@ -70,18 +70,12 @@ namespace Lun
         }
 
         static void GameLoop()
-        {
-            int timerNew = TickCount, timerOld = 0;
+        {            
             int timerFps = 0, timerAnimation = 0;
             int countFPS = 0;
-            float accumulate = 0;
-
 
             while (Running)
             {
-                timerOld = timerNew;
-                timerNew = TickCount;
-
                 if (TickCount > timerAnimation)
                 {
                     TextBox.s_animation = !TextBox.s_animation;
@@ -90,13 +84,6 @@ namespace Lun
 
                 Sound.ProcessSounds();
 
-                var delta = (timerNew - timerOld) / 1000f;
-                accumulate += delta;
-                while (accumulate >= FixedPhysicTime)
-                {
-                    accumulate -= FixedPhysicTime;
-                    Scene?.FixedUpdate();
-                }
                 Scene?.Update();
                 OnUpdate?.Invoke();
 
@@ -113,7 +100,6 @@ namespace Lun
                 OnDraw?.Invoke();
 
                 EndRender();
-
 
                 countFPS++;
                 if (TickCount > timerFps)
@@ -141,7 +127,7 @@ namespace Lun
                 ShowWindow(Window.SystemHandle, SW_MAXIMIZE);
 
             Window.SetActive(false);
-            Window.SetFramerateLimit(0);
+            Window.SetFramerateLimit(FixedPhysicTime);
             Window.SetVerticalSyncEnabled(false);
         }
 

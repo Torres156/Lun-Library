@@ -15,6 +15,8 @@ namespace Lun
         LargeTexture largeTexture;
         internal TextureTypes type = TextureTypes.Normal;
 
+        string FileName = "";
+
         /// <summary>
         /// Construtor
         /// </summary>
@@ -34,6 +36,8 @@ namespace Lun
             if (!File.Exists(filename))
                 throw new Exception($"Arquivo não encontrado!\n{filename}");
 
+            this.FileName = filename;
+
             if (large)
             {
                 type = TextureTypes.Large;
@@ -44,6 +48,7 @@ namespace Lun
                 type = TextureTypes.Normal;
                 texture = Loader.LoadNativeTexture(filename);
             }
+
         }
 
         /// <summary>
@@ -88,18 +93,25 @@ namespace Lun
         {
             get
             {
+
                 if (type == TextureTypes.Normal)
-                    return texture.Smooth;
+                    return texture != null ? texture.Smooth : false;
                 else
-                    return largeTexture.Smooth;
+                    return largeTexture != null ? largeTexture.Smooth : false;
             }
 
             set
             {
                 if (type == TextureTypes.Normal)
-                    texture.Smooth = value;
+                {
+                    if (texture != null)
+                        texture.Smooth = value;
+                }
                 else
-                    largeTexture.Smooth = value;
+                {
+                    if (largeTexture != null)
+                        largeTexture.Smooth = value;
+                }
             }
         }
 
@@ -109,9 +121,9 @@ namespace Lun
         public void Destroy()
         {
             if (type == TextureTypes.Normal)
-                texture.Dispose();
+                texture?.Dispose();
             else
-                largeTexture.Destroy();
+                largeTexture?.Destroy();
 
             GC.SuppressFinalize(this);
         }

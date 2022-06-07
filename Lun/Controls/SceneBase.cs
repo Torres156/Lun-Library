@@ -333,11 +333,6 @@
             }
         }
 
-        public virtual void FixedUpdate()
-        {
-
-        }
-
         public override void Resize()
         {
             Size = Game.WindowSize;
