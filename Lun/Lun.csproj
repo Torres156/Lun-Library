@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
 	  <PackageId>LunLibrary</PackageId>
-	  <Version>1.0.4.1</Version>
+	  <Version>1.0.5</Version>
 	  <Authors>Torres156</Authors>
 	  <Company>GitHub</Company>
 	  <PackageDescription>This package adds an Lun Library!</PackageDescription>
