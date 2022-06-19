@@ -49,6 +49,7 @@ namespace Lun
         public static bool WindowCanResize = false;
         public static bool WindowFullscreen = false;
         public static Camera2D DefaultCamera { get; private set; }
+        public static bool MouseVisible { get; private set; } = true;
 
 
         // Events
@@ -249,5 +250,11 @@ namespace Lun
 
         public static T GetScene<T>() where T : SceneBase
             => (T)Scene;
+
+        public static void SetMouseVisible(bool value)
+        {
+            Window.SetMouseCursorVisible(value);
+            MouseVisible = value;
+        }
     }
 }
