@@ -16,6 +16,8 @@ namespace Lun
         // Volumes
         static byte vol_Music = 100;    // Volume da musica
         static byte vol_Sound = 100;    // Volume dos soms
+        static bool use_Music = true;   // Usar música
+        static bool use_Sound = false;  // Usar sons
 
         /// <summary>
         /// Volume da musica
@@ -53,6 +55,34 @@ namespace Lun
         }
 
         /// <summary>
+        /// Usar musica
+        /// </summary>
+        public static bool Use_Music
+        {
+            get => use_Music;
+            set
+            {
+                use_Music = value;
+                if (!value)
+                    StopMusic();
+            }
+        }
+
+        /// <summary>
+        /// Usar som
+        /// </summary>
+        public static bool Use_Sound
+        {
+            get => use_Sound;
+            set
+            {
+                use_Sound = value;
+                if (!value)
+                    StopSounds();
+            }
+        }
+
+        /// <summary>
         /// Toca uma musica
         /// </summary>
         /// <param name="fileName"></param>
@@ -61,6 +91,8 @@ namespace Lun
             var filePath = fileName;
             if (!File.Exists(filePath))
                 throw new Exception($"Lun::Sound::PlayMusic()\n");
+
+            if (!use_Music) return;
 
             if (vol_Music == 0) return;
 
@@ -95,6 +127,8 @@ namespace Lun
         /// <param name="buffer"></param>
         public static void PlaySound(SFML.Audio.SoundBuffer buffer)
         {
+            if (!use_Sound) return;
+
             if (vol_Sound == 0) return;
 
             var s = new SFML.Audio.Sound(buffer);

@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.1": {},
     ".NETStandard,Version=v2.1/": {
-      "Lun/1.0.5": {
+      "Lun/1.0.6": {
         "dependencies": {
           "CSFML.Redist": "2.5.1"
         },
@@ -19,7 +19,7 @@
     }
   },
   "libraries": {
-    "Lun/1.0.5": {
+    "Lun/1.0.6": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
