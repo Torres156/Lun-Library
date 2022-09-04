@@ -9,7 +9,11 @@
             get => _selectIndex;
             set
             {
-                _selectIndex = value;
+                if (_selectIndex != value)
+                {
+                    _selectIndex = value;
+                    OnSelectIndexValueChanged?.Invoke(this);
+                }
             }
         }
         int _selectIndex = -1;
@@ -23,10 +27,11 @@
         public float Radius = 4f;
         public uint CornerPoints = 8;
 
-
         RenderTexture render;
         ScrollVertical scrlTop;
         int _hover;
+
+        public event HandleCommon OnSelectIndexValueChanged;
 
         public ListBox(Bond bond) : base(bond)
         {
