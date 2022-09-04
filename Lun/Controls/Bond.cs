@@ -206,7 +206,7 @@ namespace Lun.Controls
             else
             {
                 if (control is TextBox)
-                    (control as TextBox).TabIndex = controls.Count(i => i is TextBox);
+                    (control as TextBox).TabIndex = controls.Count(i => i != null && i is TextBox);
 
                 controls.Add(control);                
             }
@@ -218,9 +218,9 @@ namespace Lun.Controls
         /// <param name="index"></param>
         internal void TextBoxNext(int index)
         {
-            if (controls.Any(i => (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index))
+            if (controls.Any(i => i != null && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index))
             {
-                (controls.Find(i => (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox)?.SetFocus();
+                (controls.Find(i => i != null && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox)?.SetFocus();
                 return;
             }
 
