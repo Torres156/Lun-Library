@@ -27,8 +27,8 @@ namespace Lun.Controls
             get => _checked;
             set
             {
-                OnCheckedChanged?.Invoke(this);
                 _checked = value;
+                OnCheckedChanged?.Invoke(this);                
             }
         }
 
