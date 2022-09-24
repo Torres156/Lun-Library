@@ -244,7 +244,9 @@ namespace Lun
         public static void WindowReload()
         {
             Window.Close();
+            Window = null;
             CreateWindow();
+            HandleEvents();
         }
 
         public static void SetScene<T>(params object[] args) where T : SceneBase
