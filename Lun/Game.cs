@@ -247,6 +247,10 @@ namespace Lun
             Window = null;
             CreateWindow();
             HandleEvents();
+            Scene?.Resize();
+            OnResize?.Invoke();
+            DefaultCamera.Size = WindowSize;
+            DefaultCamera.Center = (WindowSize / 2);
         }
 
         public static void SetScene<T>(params object[] args) where T : SceneBase
