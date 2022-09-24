@@ -241,6 +241,12 @@ namespace Lun
             //    scene.Resize();
         }
 
+        public static void WindowReload()
+        {
+            Window.Close();
+            CreateWindow();
+        }
+
         public static void SetScene<T>(params object[] args) where T : SceneBase
         {
             Scene?.UnloadContent();

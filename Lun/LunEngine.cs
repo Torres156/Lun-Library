@@ -13,20 +13,23 @@ namespace Lun
     public static class LunEngine
     {
         // Dispositivos
-        static readonly Sprite _sprite = new Sprite();
-        static readonly LargeSprite _spritelarge = new LargeSprite();
-        static readonly RectangleShape rec = new RectangleShape();
-        static readonly CircleShape cir = new CircleShape();
-        static readonly RoundedRectangleShape roundrec = new RoundedRectangleShape();
-        static readonly LineShape lineshape = new LineShape();
+        static readonly Sprite                _sprite      = new Sprite();
+        static readonly LargeSprite           _spritelarge = new LargeSprite();
+        static readonly RectangleShape        rec          = new RectangleShape();
+        static readonly CircleShape           cir          = new CircleShape();
+        static readonly RoundedRectangleShape roundrec     = new RoundedRectangleShape();
+        static readonly LineShape             lineshape    = new LineShape();
+
         internal static RenderTarget target;
-        static List<RenderTarget> renders = new List<RenderTarget>();        
+
+        static List<RenderTarget> renders = new List<RenderTarget>(); 
+        static List<Camera2D>     cams    = new List<Camera2D>();
+
         static Camera2D currentCamera;
-        static List<Camera2D> cams = new List<Camera2D>();
 
 
         // Vertices
-        static Vertex[] lines = new Vertex[2];
+        static Vertex[] lines     = new Vertex[2];
         static Vertex[] gradients = new Vertex[4];
 
 
