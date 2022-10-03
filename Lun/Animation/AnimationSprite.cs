@@ -25,7 +25,7 @@ namespace Lun.Animation
         int frame_current = 0;
         long frame_currenttimer = 0;
         string frame_key = "";
-        public Texture texture { get; private set; }
+        public Texture texture { get; set; }
 
         /// <summary>
         /// Construtor
@@ -101,5 +101,8 @@ namespace Lun.Animation
             frame_current = 0;
             frame_currenttimer = Environment.TickCount + frame_timer;
         }
+
+        public Rectangle[] GetFrameRect(string key)
+            => collection[frame_key];
     }
 }

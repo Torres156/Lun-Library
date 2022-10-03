@@ -13,11 +13,11 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("GitHub")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.0.1")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0.1")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.0.2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0.2")]
 [assembly: System.Reflection.AssemblyProductAttribute("Lun")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Lun")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.1.0.1")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.1.0.2")]
 [assembly: System.Reflection.AssemblyMetadataAttribute("RepositoryUrl", "https://github.com/Torres156/Lun-Library")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.

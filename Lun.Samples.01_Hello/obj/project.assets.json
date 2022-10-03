@@ -239,7 +239,7 @@
           }
         }
       },
-      "LunLibrary/1.1.0.2": {
+      "LunLibrary/1.1.0.3": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
@@ -325,7 +325,7 @@
         "sfml-icon.png"
       ]
     },
-    "LunLibrary/1.1.0.2": {
+    "LunLibrary/1.1.0.3": {
       "type": "project",
       "path": "../Lun/Lun.csproj",
       "msbuildProject": "../Lun/Lun.csproj"
@@ -333,11 +333,12 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "LunLibrary >= 1.1.0.2"
+      "LunLibrary >= 1.1.0.3"
     ]
   },
   "packageFolders": {
     "C:\\Users\\Gustavo\\.nuget\\packages\\": {},
+    "C:\\Users\\Gustavo\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
@@ -350,10 +351,12 @@
       "outputPath": "D:\\Curso\\Lun\\Lun.Samples.01_Hello\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Users\\Gustavo\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
         "C:\\Users\\Gustavo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Gustavo\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
