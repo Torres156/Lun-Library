@@ -218,13 +218,13 @@ namespace Lun.Controls
         /// <param name="index"></param>
         internal void TextBoxNext(int index)
         {
-            if (controls.Any(i => i != null && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index))
+            if (controls.Any(i => i != null && i is TextBox && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index))
             {
-                (controls.Find(i => i != null && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox)?.SetFocus();
+                (controls.Find(i => i != null && i is TextBox && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox)?.SetFocus();
                 return;
             }
 
-            var find = (TextBox)controls.Find(i => (i as TextBox).CanTabNext);
+            var find = (TextBox)controls.Find(i => i is TextBox && (i as TextBox).CanTabNext);
             find?.SetFocus();
         }
 
