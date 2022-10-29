@@ -56,7 +56,7 @@ namespace Lun.Controls
             DrawRoundedRectangle(gp, Size, BackgroundColor, Radius, CornerPoints);
 
             float realHeight = Size.y - 2;
-            float percent = 1f / (float)(Maximum + 1);
+            float percent = 1f / (float)(Maximum);
             float barHeight = MathF.Max(16f, realHeight * percent);
             percent = Value / (float)(Maximum + 1);
             float y = (realHeight - barHeight) * percent;
