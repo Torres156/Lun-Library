@@ -74,7 +74,7 @@ namespace Lun
         {            
             int timerFps = 0, timerAnimation = 0;
             int countFPS = 0, timerDelay = 0;
-            float physicTime = FixedPhysicTime / 1000f;
+            float physicTime = 1f / FixedPhysicTime ;
             float accumulate = 0f, delta = 0f;
             var clock = new SFML.System.Clock();
             
