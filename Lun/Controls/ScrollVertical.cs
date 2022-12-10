@@ -55,12 +55,11 @@ namespace Lun.Controls
             // Background
             DrawRoundedRectangle(gp, Size, BackgroundColor, Radius, CornerPoints);
 
-            float realHeight = Size.y - 2;
-            float percent = 1f / (float)(Maximum);
-            float barHeight = MathF.Max(16f, realHeight * percent);
-            percent = Value / (float)(Maximum + 1);
-            float y = (realHeight - barHeight) * percent;
-            DrawRoundedRectangle(gp + new Vector2(1, 1 + y), new Vector2(Size.x - 2, barHeight), FillColor, Radius, CornerPoints);
+            float p = 1f / (Maximum + 1);
+            float barh = MathF.Max(16f, (Size.y - 2) * p);
+            float posY = ((Size.y - 2) - barh) * (Value  / (float)Maximum);
+            float y = posY;
+            DrawRoundedRectangle(gp + new Vector2(1, 1 + y), new Vector2(Size.x - 2, barh), FillColor, Radius, CornerPoints);
 
             // Change value
             if (_press)

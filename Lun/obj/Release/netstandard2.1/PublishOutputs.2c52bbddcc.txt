@@ -1,0 +1,3 @@
+D:\Curso\Lun\Build\Lun\Release\net6.0\publish\Lun.dll
+D:\Curso\Lun\Build\Lun\Release\net6.0\publish\Lun.deps.json
+D:\Curso\Lun\Build\Lun\Release\net6.0\publish\Lun.pdb

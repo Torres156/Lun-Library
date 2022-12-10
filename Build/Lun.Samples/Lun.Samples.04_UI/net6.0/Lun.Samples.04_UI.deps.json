@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Lun.Samples.04_UI/1.0.0": {
         "dependencies": {
-          "LunLibrary": "1.0.0"
+          "LunLibrary": "1.1.2"
         },
         "runtime": {
           "Lun.Samples.04_UI.dll": {}
@@ -308,7 +308,7 @@
           }
         }
       },
-      "LunLibrary/1.0.0": {
+      "LunLibrary/1.1.2": {
         "dependencies": {
           "CSFML.Redist": "2.5.1"
         },
@@ -331,7 +331,7 @@
       "path": "csfml.redist/2.5.1",
       "hashPath": "csfml.redist.2.5.1.nupkg.sha512"
     },
-    "LunLibrary/1.0.0": {
+    "LunLibrary/1.1.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

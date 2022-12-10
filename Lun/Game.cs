@@ -73,34 +73,50 @@ namespace Lun
         static void GameLoop()
         {            
             int timerFps = 0, timerAnimation = 0;
-            int countFPS = 0;
+            int countFPS = 0, timerDelay = 0;
+            float physicTime = FixedPhysicTime / 1000f;
+            float accumulate = 0f, delta = 0f;
+            var clock = new SFML.System.Clock();
+            
 
             while (Running)
             {
-                if (TickCount > timerAnimation)
+                if (TickCount > timerDelay)
                 {
-                    TextBox.s_animation = !TextBox.s_animation;
-                    timerAnimation = TickCount + 250;
+                    delta = clock.Restart().AsSeconds();
+
+                    if (TickCount > timerAnimation)
+                    {
+                        TextBox.s_animation = !TextBox.s_animation;
+                        timerAnimation = TickCount + 250;
+                    }
+
+                    Sound.ProcessSounds();
+
+                    accumulate += delta;
+                    while (accumulate >= physicTime)
+                    { 
+                        Scene?.Update();
+                        OnUpdate?.Invoke();
+
+                        accumulate -= physicTime;
+                    }
+
+                    Window.DispatchEvents();
+
+                    BeginRender(Window);
+
+                    ClearColor(BackgroundColor);
+
+                    BeginCamera(DefaultCamera);
+                    Scene?.Draw();
+                    EndCamera();
+
+                    OnDraw?.Invoke();
+
+                    EndRender();
+                    timerDelay = TickCount + 1;
                 }
-
-                Sound.ProcessSounds();
-
-                Scene?.Update();
-                OnUpdate?.Invoke();
-
-                Window.DispatchEvents();
-
-                BeginRender(Window);
-
-                ClearColor(BackgroundColor);
-
-                BeginCamera(DefaultCamera);
-                Scene?.Draw();
-                EndCamera();
-
-                OnDraw?.Invoke();
-
-                EndRender();
 
                 countFPS++;
                 if (TickCount > timerFps)
@@ -128,7 +144,7 @@ namespace Lun
                 ShowWindow(Window.SystemHandle, SW_MAXIMIZE);
 
             Window.SetActive(false);
-            Window.SetFramerateLimit(FixedPhysicTime);
+            Window.SetFramerateLimit(0);
             Window.SetVerticalSyncEnabled(false);
         }
 
