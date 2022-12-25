@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Lun.Animation
 {
     using static LunEngine;
-    public class AnimationPlayer : Drawable
+    public class AnimationPlayer
     {
         AnimationTexture animation;
 
@@ -118,7 +118,7 @@ namespace Lun.Animation
         /// </summary>
         /// <param name="target"></param>
         /// <param name="states"></param>
-        public void Draw(RenderTarget target, RenderStates states)
+        public void Draw()
         {
             if (Destroy) return;
             Update();
