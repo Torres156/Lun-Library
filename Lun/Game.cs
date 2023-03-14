@@ -72,8 +72,8 @@ namespace Lun
 
         static void GameLoop()
         {            
-            int timerFps = 0, timerAnimation = 0;
-            int countFPS = 0, timerDelay = 0;
+            long timerFps = 0, timerAnimation = 0, timerDelay = 0;
+            int countFPS = 0;
             float physicTime = 1f / FixedPhysicTime ;
             float accumulate = 0f, delta = 0f;
             var clock = new SFML.System.Clock();
@@ -81,26 +81,26 @@ namespace Lun
 
             while (Running)
             {
-                if (TickCount > timerDelay)
+                if (Environment.TickCount64 > timerDelay)
                 {
                     delta = clock.Restart().AsSeconds();
 
-                    if (TickCount > timerAnimation)
+                    if (Environment.TickCount64 > timerAnimation)
                     {
                         TextBox.s_animation = !TextBox.s_animation;
-                        timerAnimation = TickCount + 250;
+                        timerAnimation = Environment.TickCount64 + 250;
                     }
 
                     Sound.ProcessSounds();
 
-                    accumulate += delta;
-                    while (accumulate >= physicTime)
-                    { 
+                    //accumulate += delta;
+                    //while (accumulate >= physicTime)
+                    //{ 
                         Scene?.Update();
                         OnUpdate?.Invoke();
 
-                        accumulate -= physicTime;
-                    }
+                        //accumulate -= physicTime;
+                    //}
 
                     Window.DispatchEvents();
 
@@ -115,15 +115,15 @@ namespace Lun
                     OnDraw?.Invoke();
 
                     EndRender();
-                    timerDelay = TickCount + 1;
+                    timerDelay = Environment.TickCount64 + 1;
                 }
 
                 countFPS++;
-                if (TickCount > timerFps)
+                if (Environment.TickCount64 >= timerFps)
                 {
                     FPS = countFPS;
                     countFPS = 0;
-                    timerFps = TickCount + 1000;
+                    timerFps = Environment.TickCount64 + 1000;
                 }
             }
             Sound.StopSounds();

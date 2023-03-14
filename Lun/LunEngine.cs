@@ -7,6 +7,7 @@ using Lun.SFML.Graphics;
 using Lun.SFML.Window;
 using Lun.Shapes;
 using System.Reflection;
+using System.Drawing;
 
 namespace Lun
 {
@@ -251,6 +252,117 @@ namespace Lun
                 DrawText(text, charactersize, position, color);
         }
 
+        public static void DrawBBColor(string text, int charactersize, Vector2 position)
+        {   
+            // Replaces
+            text = text.Replace("[color=white]", "[color=#FFFFFFFF]");
+            text = text.Replace("[color=black]", "[color=#000000FF]");
+            text = text.Replace("[color=red]", "[color=#FF0000FF]");
+            text = text.Replace("[color=green]", "[color=#00FF00FF]");
+            text = text.Replace("[color=blue]", "[color=#0000FFFF]");
+            
+            var colorList   = new List<Color>();
+           
+            int lengthTag   = "[color=#".Length;
+            float off       = 0;
+
+            colorList.Add(Color.White);          
+
+            if (text.Contains("[color=#"))
+            {
+                bool haveColor    = false;
+                bool haveEndColor = false;
+
+                while ((haveColor = (text.Contains("[color=#") && text.Contains("]"))) | (haveEndColor = text.Contains("[/color]")))
+                {                       
+                    if (haveColor && !haveEndColor)
+                    {
+                        var find        = text.IndexOf("[color=#");
+                        int lengthColor = text.Substring(find + lengthTag).IndexOf("]");
+                        var colorKey    = StrToByteArray(text.Substring(find + lengthTag, lengthColor));
+
+                        if (find > 0)
+                            DrawText(text.Substring(0, find), charactersize, position + new Vector2(off, 0), colorList.Last());
+
+                        if (colorKey.Length == 3)
+                            colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2]));
+                        else if (colorKey.Length == 4)
+                            colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2], colorKey[3]));
+
+                        off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
+                        text = text.Remove(0, find + lengthTag + lengthColor + 1);
+                    }
+                    else if (!haveColor && haveEndColor)
+                    {
+                        var find        = text.IndexOf("[/color]");
+
+                        if (find > 0)
+                            DrawText(text.Substring(0, find), charactersize, position + new Vector2(off, 0), colorList.Last());
+
+                        if (colorList.Count > 1)
+                            colorList.RemoveAt(colorList.Count - 1);
+                        off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
+                        text = text.Remove(0, find + "[/color]".Length);
+                    }
+                    else if (haveColor && haveEndColor)
+                    {
+                        var find    = text.IndexOf("[color=#");
+                        var findEnd = text.IndexOf("[/color]");
+
+                        if (find < findEnd)
+                        {
+                            int lengthColor = text.Substring(find + lengthTag).IndexOf("]");
+                            var colorKey    = StrToByteArray( text.Substring(find + lengthTag, lengthColor));
+
+                            if (find > 0)
+                                DrawText(text.Substring(0, find), charactersize, position + new Vector2(off, 0), colorList.Last());
+
+                            if (colorKey.Length == 3)
+                                colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2]));
+                            else if (colorKey.Length == 4)
+                                colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2], colorKey[3]));
+
+
+                            off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
+                            text = text.Remove(0, find + lengthTag + lengthColor + 1);
+                        }
+                        else
+                        {
+                            if (findEnd > 0)
+                                DrawText(text.Substring(0, findEnd), charactersize, position + new Vector2(off, 0), colorList.Last());
+
+                            if (colorList.Count > 1)
+                                colorList.RemoveAt(colorList.Count - 1);
+
+                            off += GetTextWidth(text.Substring(0, findEnd), (uint)charactersize);
+                            text = text.Remove(0, findEnd + "[/color]".Length);
+                        }
+                    }
+                }
+
+                if (text.Length > 0)
+                    DrawText(text, charactersize, position + new Vector2(off, 0), colorList.Last());
+            }
+            else
+            {
+                DrawText(text, charactersize, position, colorList.Last());
+            }
+
+        }
+
+        public static byte[] StrToByteArray(string str)
+        {
+            Dictionary<string, byte> hexindex = new Dictionary<string, byte>();
+            for (int i = 0; i <= 255; i++)
+                hexindex.Add(i.ToString("X2"), (byte)i);
+
+            List<byte> hexres = new List<byte>();
+            for (int i = 0; i < str.Length; i += 2)
+                hexres.Add(hexindex[str.Substring(i, 2)]);
+
+            return hexres.ToArray();
+        }
+
         /// <summary>
         /// Desenha um degrade - QUADS vertex
         /// </summary>
@@ -450,6 +562,14 @@ namespace Lun
             if (text.Trim().Length == 0)
                 return 0;
 
+            if (text.Contains("[color=") && text.Contains("]"))
+            while (text.Contains("[color=") && text.Contains("]"))
+                text = text.Remove(text.IndexOf("[color="), text.IndexOf("]") - text.IndexOf("[color="));
+
+            if (text.Contains("[/color]"))
+                while (text.Contains("[/color]"))
+                    text = text.Remove(text.IndexOf("[/color]"), "[/color]".Length);
+
             _text.CharacterSize = characterSize;
             _text.DisplayedString = text;
 
@@ -571,6 +691,61 @@ namespace Lun
             return collection.ToArray();
         }
 
+        public static string[] GetWordWrapBBColor(string text, int width, uint characterSize = 11)
+        {
+            var collection = new List<string>();
+            if (text.Length > 0)
+            {
+                var words = text.Split();
+                string line = "";
+                string linetrue = "";
+                var copyColor = "";
+                foreach (var i in words)
+                {
+                    //float off = 0;
+                    var wordTrue = i;
+
+                    if (i == "/n")
+                    {
+                        collection.Add(linetrue.Trim());
+                        linetrue = "";
+                        line = "";
+                        continue;
+                    }
+
+                    while (wordTrue.Contains("[color=") && wordTrue.Contains("]"))
+                    {
+                        var find = wordTrue.IndexOf("[color=");
+                        var findEnd = wordTrue.Substring(find).IndexOf("]");
+                        copyColor = wordTrue.Substring(find, findEnd + 1);
+                        wordTrue = wordTrue.Remove(find, findEnd + 1);
+                    }
+
+                    while (wordTrue.Contains("[/color]"))
+                    {
+                        var find = wordTrue.IndexOf("[/color]");
+                        var findEnd = "[/color]".Length;
+                        copyColor = wordTrue.Substring(find, findEnd);
+                        wordTrue = wordTrue.Remove(find, findEnd);
+                    }
+
+                    if (GetTextWidth(line + wordTrue, characterSize) > width)
+                    {
+                        collection.Add(linetrue.Trim());
+                        line = wordTrue + " ";
+                        linetrue = copyColor + i + " ";
+                    }
+                    else
+                    {
+                        line += wordTrue + " ";
+                        linetrue += i + " ";
+                    }
+                }
+                if (linetrue.Length > 0) collection.Add(linetrue.Trim());
+            }
+            return collection.ToArray();
+        }
+
         /// <summary>
         /// Word Wrap
         /// </summary>
@@ -586,7 +761,6 @@ namespace Lun
                 string line = "";
                 foreach (var i in text)
                 {
-
                     if (GetTextWidth(line + i, characterSize) > width)
                     {
                         collection.Add(line.Trim());

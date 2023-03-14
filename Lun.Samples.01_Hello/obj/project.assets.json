@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {
+    "net7.0": {
       "CSFML.Redist/2.5.1": {
         "type": "package",
         "runtimeTargets": {
@@ -239,9 +239,9 @@
           }
         }
       },
-      "LunLibrary/1.1.3.2": {
+      "LunLibrary/1.1.4": {
         "type": "project",
-        "framework": ".NETStandard,Version=v2.1",
+        "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
           "CSFML.Redist": "2.5.1"
         },
@@ -325,43 +325,43 @@
         "sfml-icon.png"
       ]
     },
-    "LunLibrary/1.1.3.2": {
+    "LunLibrary/1.1.4": {
       "type": "project",
       "path": "../Lun/Lun.csproj",
       "msbuildProject": "../Lun/Lun.csproj"
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0": [
-      "LunLibrary >= 1.1.3.2"
+    "net7.0": [
+      "LunLibrary >= 1.1.4"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gustavo\\.nuget\\packages\\": {},
-    "C:\\Users\\Gustavo\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder": {},
+    "C:\\Users\\vforc\\.nuget\\packages\\": {},
+    "C:\\Users\\vforc\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Curso\\Lun\\Lun.Samples.01_Hello\\Lun.Samples.01_Hello.csproj",
+      "projectUniqueName": "E:\\Curso\\Lun\\Lun.Samples.01_Hello\\Lun.Samples.01_Hello.csproj",
       "projectName": "Lun.Samples.01_Hello",
-      "projectPath": "D:\\Curso\\Lun\\Lun.Samples.01_Hello\\Lun.Samples.01_Hello.csproj",
-      "packagesPath": "C:\\Users\\Gustavo\\.nuget\\packages\\",
-      "outputPath": "D:\\Curso\\Lun\\Lun.Samples.01_Hello\\obj\\",
+      "projectPath": "E:\\Curso\\Lun\\Lun.Samples.01_Hello\\Lun.Samples.01_Hello.csproj",
+      "packagesPath": "C:\\Users\\vforc\\.nuget\\packages\\",
+      "outputPath": "E:\\Curso\\Lun\\Lun.Samples.01_Hello\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Users\\Gustavo\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",
+        "C:\\Users\\vforc\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder",
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Gustavo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Users\\Gustavo\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
+        "C:\\Users\\vforc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\vforc\\AppData\\Roaming\\NuGet\\config\\Godot.Offline.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net6.0"
+        "net7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -369,11 +369,11 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Curso\\Lun\\Lun\\Lun.csproj": {
-              "projectPath": "D:\\Curso\\Lun\\Lun\\Lun.csproj"
+            "E:\\Curso\\Lun\\Lun\\Lun.csproj": {
+              "projectPath": "E:\\Curso\\Lun\\Lun\\Lun.csproj"
             }
           }
         }
@@ -385,8 +385,8 @@
       }
     },
     "frameworks": {
-      "net6.0": {
-        "targetAlias": "net6.0",
+      "net7.0": {
+        "targetAlias": "net7.0",
         "imports": [
           "net461",
           "net462",
@@ -403,7 +403,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	  <PackageId>LunLibrary</PackageId>
-	  <Version>1.1.3.2</Version>
+	  <Version>1.1.4</Version>
 	  <Authors>Torres156</Authors>
 	  <Company>GitHub</Company>
 	  <PackageDescription>This package adds an Lun Library!</PackageDescription>

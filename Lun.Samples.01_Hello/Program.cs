@@ -35,8 +35,8 @@ namespace Lun.Samples._01_Hello
 
         public override void Draw()
         {
-            var text = "Hello Lun!";
-            DrawText(text, 12, new Vector2((Game.WindowSize.x - GetTextWidth(text, 12)) / 2, Game.WindowSize.y / 2 - 7), Color.White);
+            var text = "[color=red]Hello[/color] Lun!";
+            DrawBBColor(text, 22, new Vector2((Game.WindowSize.x - GetTextWidth(text, 22)) / 2, Game.WindowSize.y / 2 - 7));
         }
     }
 }
