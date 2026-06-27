@@ -146,7 +146,7 @@ namespace Lun.Animation
             // BeginRenderStates(Blend ? new RenderStates(BlendMode.Add) : RenderStates.Default);
 
             batcher.DrawTexture(texture, new Rectangle(Position, texture.size * Scale),
-                new Rectangle(Vector2.Zero, texture.size), Origin, Color, (int)Rotation);
+                new Rectangle(Vector2.Zero, texture.size), Origin, Color, Blend ? BlendMode.Add : BlendMode.Alpha, (int)Rotation);
 
             //EndRenderStates();
         }

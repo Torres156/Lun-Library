@@ -13,6 +13,7 @@ class Batcher2DValue
     private uint _count;
 
     public sfTexture Texture { get; set; } = null;
+    public BlendMode BlendMode { get; set; } = BlendMode.Alpha;
 
     public Batcher2DValue(int capacity = 40960)
     {
@@ -126,6 +127,7 @@ public class Batcher2D
             if (value.Count > 0)
             {
                 _states.Texture = value.Texture;
+                _states.BlendMode = value.BlendMode;
                 currentTarget.Draw(value.Vertices, 0, value.Count, PrimitiveType.Triangles, _states);                
             }
         }
@@ -331,7 +333,7 @@ public class Batcher2D
         return new Vector2(xnew, ynew) + center;
     }
 
-    void DrawNativeTexture(sfTexture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, int rotation = 0)
+    void DrawNativeTexture(sfTexture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, BlendMode blendMode, int rotation = 0)
     {
         dest.position -= origin;
         var batcher = GetOrCreate(texture);
@@ -380,9 +382,23 @@ public class Batcher2D
             var size = (Vector2)tex.Size * scale;
             // Chunk size
             var src = new Rectangle(0,0, tex.Size.X,tex.Size.Y);
-            DrawNativeTexture(tex, new Rectangle(pos,size), src, Vector2.Zero, color);
+            DrawNativeTexture(tex, new Rectangle(pos,size), src, Vector2.Zero, color, BlendMode.Alpha);
         }    
-    }    
+    }
+
+    public void DrawTexture(Texture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, BlendMode blendMode, int rotation = 0)
+    {
+        if (texture == null) throw new ArgumentNullException(nameof(texture));
+
+        if (texture.type == TextureTypes.Normal)
+        {
+            DrawNativeTexture(texture.GetTexture(), dest, src, origin, color, blendMode, rotation);
+        }
+        else if (texture.type == TextureTypes.Large)
+        {
+            DrawLargeTexture(texture.GetLargeTexture(), dest, color);
+        }
+    }
 
     public void DrawTexture(Texture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, int rotation = 0)
     {
@@ -390,7 +406,7 @@ public class Batcher2D
         
         if (texture.type == TextureTypes.Normal)
         {
-            DrawNativeTexture(texture.GetTexture(), dest, src, origin, color, rotation);
+            DrawNativeTexture(texture.GetTexture(), dest, src, origin, color, BlendMode.Alpha, rotation);
         }
         else if (texture.type == TextureTypes.Large)
         {

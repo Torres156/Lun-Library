@@ -1080,7 +1080,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.6.0",
+    "version": "1.6.1",
     "restore": {
       "projectUniqueName": "F:\\Curso\\Lun\\Lun\\Lun.csproj",
       "projectName": "LunLibrary",
