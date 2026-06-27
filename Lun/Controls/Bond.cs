@@ -53,7 +53,7 @@ namespace Lun.Controls
             {
                 var count = controls.Count;
                 for (int i = 0; i < count; i++)
-                    if (controls[i] != null && controls[i] != priority && controls[i].Visible)
+                    if (controls[i] is {Visible: true} && controls[i] != priority)
                        controls[i].Draw();
             }
 
@@ -61,7 +61,7 @@ namespace Lun.Controls
             {
                 var count = forms.Count;
                 for (int i = 0; i < count; i++)
-                    if (forms[i] != null && forms[i].Visible)
+                    if (forms[i] is { Visible:true})
                         forms[i].Draw();
             }
 
@@ -172,11 +172,11 @@ namespace Lun.Controls
             {
                 if (formDragged.form != null) return true;
 
-                if (priority != null && priority.Visible && priority.MouseScrolled(e)) return true;
+                if (priority is { Visible: true } && priority.MouseScrolled(e)) return true;
 
                 // Encontrar Scrolls
                 var findScrolls = controls.FirstOrDefault(i => i is ScrollVertical);
-                if (findScrolls != null && findScrolls.Visible && (findScrolls as ScrollVertical).CanScrollWithBond)
+                if (findScrolls is { Visible: true } && (findScrolls as ScrollVertical)?.CanScrollWithBond == true)
                 {
                     (findScrolls as ScrollVertical).InternalMouseScrollWheel((int)e.Delta);
                     return true;
@@ -201,12 +201,12 @@ namespace Lun.Controls
         /// <param name="control"></param>
         public void AddControl(ControlBase control)
         {
-            if (control.GetType().Name == "Form" || control.GetType().BaseType.Name == "Form")
+            if (control.GetType().Name == "Form" || control.GetType().BaseType?.Name == "Form")
                 forms.Add((Form)control);
             else
             {
-                if (control is TextBox)
-                    (control as TextBox).TabIndex = controls.Count(i => i != null && i is TextBox);
+                if (control is TextBox box)
+                    box.TabIndex = controls.Count(i => i is TextBox);
 
                 controls.Add(control);                
             }
@@ -218,13 +218,13 @@ namespace Lun.Controls
         /// <param name="index"></param>
         internal void TextBoxNext(int index)
         {
-            if (controls.Any(i => i != null && i is TextBox && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index))
+            if (controls.Find(i => i is TextBox { CanTabNext: true } box && box.TabIndex > index) is TextBox textBox)
             {
-                (controls.Find(i => i != null && i is TextBox && (i as TextBox).CanTabNext && (i as TextBox).TabIndex > index) as TextBox)?.SetFocus();
+                textBox.SetFocus();
                 return;
             }
 
-            var find = (TextBox)controls.Find(i => i is TextBox && (i as TextBox).CanTabNext);
+            var find = controls.Find(i => i is TextBox { CanTabNext: true }) as TextBox;
             find?.SetFocus();
         }
 
@@ -262,7 +262,7 @@ namespace Lun.Controls
         public void SetFocusForm(Form control)
         {
             if (forms.Count == 0) return;
-            if (control == forms[forms.Count - 1]) return;
+            if (control == forms[^1]) return;
 
             var lst = new List<Form>();
             foreach (var i in forms)

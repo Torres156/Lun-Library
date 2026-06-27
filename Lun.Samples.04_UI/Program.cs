@@ -38,6 +38,8 @@ namespace Lun.Samples._04_UI
         CheckButton checkSample;
         TabControl tabSample;
 
+        TextBox txtSample;
+
         public override void LoadContent()
         {
             formSample = new Form(this)
@@ -98,9 +100,27 @@ namespace Lun.Samples._04_UI
                 Position = new Vector2(0,40),
             };
             tabSample.AddTab("Tab 01");
-            tabSample.AddTab("Tab 02");            
+            tabSample.AddTab("Tab 02");
+
+            txtSample = new TextBox(this)
+            {
+                Size = new Vector2(100, 20),
+                Position = new Vector2(200, 20),
+                MaxLength = 10,
+            };
         }
 
+        public override void Draw()
+        {
+            var text = "Causa [color=#FFC602]75[/color]([color=#477BE5]+133[/color])([color=#CA29E1]+20[/color]) de Dano Mágico nos alvos, e nos [color=red]Gelidez[/color] nos alvos. /n /n Causa [color=#FFC602]50[/color]([color=#477BE5]+98[/color])([color=#CA29E1]+14[/color]) de Dano Mágico em outros alvos próximos afetados por [color=red]Gelidez[/color].";
+            var words = GetWordWrapBBColor(text, 190,11);
 
+            for (int i = 0; i < words.Length; i++)
+            {
+                DrawBBColor(words[i], 11, new Vector2(10, 14 * i));
+            }
+
+            base.Draw();
+        }
     }
 }

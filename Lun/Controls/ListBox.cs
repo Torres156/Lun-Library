@@ -1,4 +1,7 @@
-﻿namespace Lun.Controls
+﻿using SFML.Graphics;
+using SFML.Window;
+
+namespace Lun.Controls
 {
     public class ListBox : Bond
     {

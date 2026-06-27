@@ -1,4 +1,6 @@
 ﻿
+using SFML.Window;
+
 namespace Lun.Controls
 {
     using static LunEngine;

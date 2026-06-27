@@ -1,4 +1,6 @@
 ﻿
+using SFML.Window;
+
 namespace Lun.Controls
 {
     public class ScrollVertical : ControlBase
@@ -51,6 +53,7 @@ namespace Lun.Controls
         public override void Draw()
         {
             var gp = GlobalPosition();
+            if (Value > Maximum) Value = Maximum;
 
             // Background
             DrawRoundedRectangle(gp, Size, BackgroundColor, Radius, CornerPoints);

@@ -155,6 +155,7 @@
         }
 
         RenderTexture render;
+        internal int XoffSet = 0;
         #endregion
 
         #region Events
@@ -168,7 +169,7 @@
         /// <param name="bond"></param>
         public TextBox(Bond bond) : base(bond)
         {
-            Suggestion = new Dictionary<string, string[]>();            
+            Suggestion = new Dictionary<string, string[]>();
         }
 
         /// <summary>
@@ -228,32 +229,23 @@
             }
 
             // Calcula o texto aparecer
-            bool useDiff = false;
-            if (GetTextWidth(display) > Size.x - 8)
-            {                
+            if (GetTextWidth(display, ignoreBB: true) >= Size.x - 8)
+            {
                 string display2 = "";
 
-                if (GetTextWidth( display.Substring(Character_CurrentIndex)) < Size.x - 8)
-                {
-                    for (int i = display.Length - 1; i > 0; i--)
-                        if (GetTextWidth(display.Substring(i)) < Size.x - 8)
-                            display2 = display.Substring(i);
-                        else
-                            break;
-                    display = display2;
-                }
-                else
-                {
-                    var entered = display.Substring(Character_CurrentIndex);
-                    for(int i = 0; i < entered.Length; i++)
-                        if (GetTextWidth(entered.Substring(0, i)) < Size.x - 8)
-                            display2 = entered.Substring(0, i);
-                        else
-                            break;
-                    display = display2;
-                    useDiff = true;
-                }
+                var entered = display;
+                for (int i = XoffSet + 1; i < entered.Length; i++)
+                    if (GetTextWidth(entered.Substring(XoffSet, i - XoffSet + 1), ignoreBB: true) <= Size.x - 8)
+                        display2 = entered.Substring(XoffSet, i - XoffSet + 1);
+                    else
+                        break;
+
+                display = display2;
+
             }
+            else
+                XoffSet = 0;
+
 
             // Desenha o texto
             switch (Align)
@@ -274,19 +266,26 @@
             if (HasFocus() && s_animation)
             {
                 if (Character_CurrentIndex > Text.Length) Character_CurrentIndex = Text.Length;
-                
-                int diff = Text.Length - display.Length;
-                DrawText("|", 11, gp + new Vector2(X + (useDiff ? 0 : (Character_CurrentIndex == 0 ?
-                    0 :
-                    GetTextWidth(display.Substring(0, Character_CurrentIndex - diff)))),
-                    (Size.y / 2) - 7), TextColor);
+
+                int diff =  Math.Max(0, Character_CurrentIndex - XoffSet);
+                DrawText("|", 11, gp + new Vector2(X - GetTextWidth("|") / 2 + GetTextWidth(display.Substring(0, Math.Min(display.Length, diff)), ignoreBB: true),
+                     (Size.y / 2) - 7
+                    ), TextColor);
+                //DrawText("|", 11, gp + new Vector2(X + (useDiff ? 0 : (Character_CurrentIndex == 0 ?
+                //    0 :
+                //    GetTextWidth(display.Substring(0, Math.Max(0, Character_CurrentIndex - diff)), ignoreBB: true))),
+                //    (Size.y / 2) - 7), TextColor);
             }
             DrawText(display, 11, gp + new Vector2(X, (Size.y / 2) - 7), TextColor);
-            if (HasFocus() && Text.Length > 0 && Suggestion.Count > 0) Draw_Suggestion();
+            if (HasFocus() && Text.Length > 0 && Suggestion.Count > 0)
+            {
+                if (Bond != null && Bond.priority != this) Bond.priority = this;
+                Draw_Suggestion();
+            }
         }
 
         public void AddSuggestion(string Name, string valueType, string desc)
-            => Suggestion.Add(Name, new string[] { valueType, desc });
+            => Suggestion.Add(Name, [valueType, desc]);
 
         /// <summary>
         /// Desenha as sugestões
@@ -320,7 +319,7 @@
 
                     var words = GetWordWrap(findKeys[i].Value[1], w - 4);
                     for (var x = 0; x < words.Length; x++)
-                        DrawText(words[x], 11, pos + new Vector2(2, 2 + off + 14 + 14 * x), new Color(FillColor.R, FillColor.G, FillColor.B,(byte)150));
+                        DrawText(words[x], 11, pos + new Vector2(2, 2 + off + 14 + 14 * x), new Color(FillColor.R, FillColor.G, FillColor.B, (byte)150));
 
                     off += 14 + 14 * words.Length + 4;
                 }
@@ -362,6 +361,7 @@
                 {
                     Focus = this;
                     Character_CurrentIndex = Text.Length;
+                    XoffSet = MaxDisplay();
                 }
             }
         }
@@ -409,6 +409,105 @@
             if (value > Maximum) value = Maximum;
             return value;
         }
+
+        private string DisplayText()
+        {
+            string display = Text;
+            if (Password)
+            {
+                display = "";
+                foreach (var i in Text)
+                    display += "*";
+            }
+
+            return display;
+        }
+
+        private int Last()
+        {
+            string display = DisplayText();
+
+            // Calcula o texto aparecer
+            int last = XoffSet;
+            if (GetTextWidth(display, ignoreBB: true) > Size.x - 8)
+            {
+                var entered = display;
+                for (int i = XoffSet + 1; i < entered.Length; i++)
+                    if (GetTextWidth(entered.Substring(XoffSet, i - XoffSet + 1), ignoreBB: true) < Size.x - 8)
+                        last = i;
+                    else
+                        break;
+            }
+            else
+                last = display.Length;
+
+            return last;
+        }
+
+        private int MinDisplay()
+        {
+            string display = DisplayText();
+
+            var min = 0;
+            if (GetTextWidth(display, ignoreBB: true) > Size.x - 8)
+            {
+                for (int i = 0; i < display.Length; i++)
+                    if (GetTextWidth(display.Substring(0, i), ignoreBB: true) < Size.x - 8)
+                        min = i;
+                    else
+                        break;
+            }
+
+            return min;
+        }
+
+        private int MaxDisplay()
+        {
+            string display = DisplayText();
+
+            var max = 0;
+            if (GetTextWidth(display, ignoreBB: true) > Size.x - 8)
+            {
+                for (int i = display.Length - 1; i >= 0; i--)
+                    if (GetTextWidth(display.Substring(i), ignoreBB: true) < Size.x - 8)
+                        max = i;
+                    else
+                        break;
+            }
+
+            return max;
+        }
+
+        internal void RequestLeft(bool increment = true)
+        {
+            if (increment && Character_CurrentIndex > 0)
+                Character_CurrentIndex--;
+
+            var display = DisplayText();
+            if (GetTextWidth(display, ignoreBB: true) > Size.x - 8)
+            {                   
+                while ((Character_CurrentIndex < XoffSet || XoffSet > MaxDisplay()) && XoffSet > 0)
+                    XoffSet--;
+            }
+            else
+                XoffSet = 0;
+        }
+
+        internal void RequestRight(bool increment = true)
+        {
+            if (increment && Character_CurrentIndex < Text.Length)
+                Character_CurrentIndex++;
+
+            var display = DisplayText();
+            if (GetTextWidth(display, ignoreBB: true) > Size.x - 8)
+            {
+                while (Character_CurrentIndex > MinDisplay() && Character_CurrentIndex > Last()  && XoffSet < MaxDisplay())
+                    XoffSet++;
+            }
+            else
+                XoffSet = 0;
+        }                
+
         #endregion
     }
 

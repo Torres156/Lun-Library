@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SFML.System;
 
 namespace Lun.Shapes
 {
@@ -76,7 +77,7 @@ namespace Lun.Shapes
             Update();
         }
 
-        public override Vector2 GetPoint(uint index)
+        public override Vector2f GetPoint(uint index)
         {
             if (index >= GetPointCount())
                 return new Vector2(0);
@@ -109,8 +110,9 @@ namespace Lun.Shapes
                     break;
             }
 
-            return new Vector2(radius * MathF.Cos(deltaAngle * (index - centerIndex) * MathF.PI / 180) + center.x,
-                -radius * MathF.Sin(deltaAngle * (index - centerIndex) * MathF.PI / 180) + center.y);
+            var angle = deltaAngle * (index - centerIndex) * MathF.PI / 180;
+            return new Vector2(radius * MathF.Cos(angle) + center.x,
+                -radius * MathF.Sin(angle) + center.y);
         }
 
         public override uint GetPointCount()

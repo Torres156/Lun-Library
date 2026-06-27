@@ -1,44 +1,49 @@
 ﻿using Lun.Controls;
-using Lun.SFML.Graphics;
-using Lun.SFML.Window;
 using System;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using SFML.Graphics;
+using SFML.Window;
 
 namespace Lun
 {
     using static LunEngine;
+
     public static class Game
     {
         private const int SW_MAXIMIZE = 3;
+
         private const int SW_MINIMIZE = 6;
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        // [DllImport("user32.dll")]
+        // [return: MarshalAs(UnmanagedType.Bool)]
+        // static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        //
+        // [DllImport("user32.dll", SetLastError = true)]
+        // [return: MarshalAs(UnmanagedType.Bool)]
+        // static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+        //
+        // struct WINDOWPLACEMENT
+        // {
+        //     public int Lenght;
+        //     public int flags;
+        //     public int showCmd;
+        //     public Point ptMinPosition;
+        //     public Point ptMaxPosition;
+        //     public IntRect rcNormalPosition;
+        // }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
-
-        struct WINDOWPLACEMENT
-        {
-            public int Lenght;
-            public int flags;
-            public int showCmd;
-            public Point ptMinPosition;
-            public Point ptMaxPosition;
-            public IntRect rcNormalPosition;
-        }
-
-        public static bool Running = false;                                                 // Estado do jogo
-        public static int FPS { get; private set; }                                         // FPS atual
-        public static Vector2 MousePosition { get; private set; }                           // Posição do mouse
-        public static readonly string Path = AppDomain.CurrentDomain.BaseDirectory + "/";   // Diretório do jogo
-        public static RenderWindow Window { get; private set; }                             // Dispositivo gráfico para janela
-        public static uint FixedPhysicTime = 60;                                            // Tempo fixo para processamento físico
-        public static Color BackgroundColor = Color.CornflowerBlue;                         // Cor de fundo
-        public static SceneBase Scene { get; private set; }                                 // Cena atual
-        public static uint AntiAliasing = 8;        
+        public static bool Running = false; // Estado do jogo
+        public static int FPS { get; private set; } // FPS atual
+        public static Vector2 MousePosition { get; private set; } // Posição do mouse
+        public static readonly string Path = AppDomain.CurrentDomain.BaseDirectory + "/"; // Diretório do jogo
+        public static RenderWindow Window { get; private set; } // Dispositivo gráfico para janela
+        public static uint FixedPhysicTime = 60; // Tempo fixo para processamento físico
+        public static Color BackgroundColor = Color.CornflowerBlue; // Cor de fundo
+        public static SceneBase Scene { get; private set; } // Cena atual
+        public static uint AntiAliasing = 8;
+        public static float DeltaTime { get; private set; } = 0.0f;
+        public static bool PreventTextureMultiThread = false;
 
 
         // Configurações de Janela
@@ -50,6 +55,7 @@ namespace Lun
         public static bool WindowFullscreen = false;
         public static Camera2D DefaultCamera { get; private set; }
         public static bool MouseVisible { get; private set; } = true;
+        public static bool VerticalSync { get; private set; } = false;
 
 
         // Events
@@ -58,6 +64,8 @@ namespace Lun
         public static event Action OnResize;
         public static event Action OnDraw;
 
+        public static SFML.System.Clock Clock;
+
 
         public static void Run()
         {
@@ -65,58 +73,55 @@ namespace Lun
             HandleEvents();
 
             DefaultCamera = new Camera2D(WindowSize);
-
             Running = true;
             GameLoop();
         }
 
         static void GameLoop()
-        {            
-            long timerFps = 0, timerAnimation = 0, timerDelay = 0;
+        {
+            long timerFps = 0, timerAnimation = 0;
             int countFPS = 0;
-            float physicTime = 1f / FixedPhysicTime ;
-            float accumulate = 0f, delta = 0f;
+            float physicTime = 1f / FixedPhysicTime;
+            float delta = 0f;
+            long timerTexture = 0;
+            Clock = new SFML.System.Clock();
             var clock = new SFML.System.Clock();
-            
 
             while (Running)
             {
-                if (Environment.TickCount64 > timerDelay)
+                delta = clock.Restart().AsSeconds();
+                DeltaTime = delta;
+                if (Environment.TickCount64 > timerAnimation)
                 {
-                    delta = clock.Restart().AsSeconds();
-
-                    if (Environment.TickCount64 > timerAnimation)
-                    {
-                        TextBox.s_animation = !TextBox.s_animation;
-                        timerAnimation = Environment.TickCount64 + 250;
-                    }
-
-                    Sound.ProcessSounds();
-
-                    //accumulate += delta;
-                    //while (accumulate >= physicTime)
-                    //{ 
-                        Scene?.Update();
-                        OnUpdate?.Invoke();
-
-                        //accumulate -= physicTime;
-                    //}
-
-                    Window.DispatchEvents();
-
-                    BeginRender(Window);
-
-                    ClearColor(BackgroundColor);
-
-                    BeginCamera(DefaultCamera);
-                    Scene?.Draw();
-                    EndCamera();
-
-                    OnDraw?.Invoke();
-
-                    EndRender();
-                    timerDelay = Environment.TickCount64 + 1;
+                    TextBox.s_animation = !TextBox.s_animation;
+                    timerAnimation = Environment.TickCount64 + 250;
                 }
+
+                if (Environment.TickCount64 > timerTexture)
+                {
+                    foreach (var texture in cacheTextures)
+                        texture?.Unload();
+                    timerTexture = Environment.TickCount64 + 5000;
+                }
+
+                Sound.ProcessSounds();
+
+                Scene?.Update();
+                OnUpdate?.Invoke();
+
+                BeginRender(Window);
+
+                Window.DispatchEvents();
+
+                ClearColor(BackgroundColor);
+
+                BeginCamera(DefaultCamera);
+                Scene?.Draw();
+                EndCamera();
+
+                OnDraw?.Invoke();
+
+                EndRender();
 
                 countFPS++;
                 if (Environment.TickCount64 >= timerFps)
@@ -126,6 +131,7 @@ namespace Lun
                     timerFps = Environment.TickCount64 + 1000;
                 }
             }
+
             Sound.StopSounds();
             Sound.StopMusic();
             Window.Close();
@@ -136,16 +142,14 @@ namespace Lun
             var video = new VideoMode((uint)WindowSize.x, (uint)WindowSize.y);
             var context = new ContextSettings(32, 8, AntiAliasing);
             if (!WindowFullscreen)
-                Window = new RenderWindow(video, WindowTitle, WindowCanResize ? Styles.Close | Styles.Resize : Styles.Close, context);
+                Window = new RenderWindow(video, WindowTitle,
+                    WindowCanResize ? Styles.Close | Styles.Resize : Styles.Close, context);
             else
                 Window = new RenderWindow(video, WindowTitle, Styles.Fullscreen, context);
 
-            if (WindowMaximize)
-                ShowWindow(Window.SystemHandle, SW_MAXIMIZE);
-
             Window.SetActive(false);
-            Window.SetFramerateLimit(0);
-            Window.SetVerticalSyncEnabled(false);
+            Window.SetFramerateLimit(FixedPhysicTime);
+            Window.SetVerticalSyncEnabled(VerticalSync);
         }
 
         static void HandleEvents()
@@ -205,17 +209,7 @@ namespace Lun
 
         private static void Window_Resized(object sender, SizeEventArgs e)
         {
-            bool isUpdate = false;
-            if (e.Width < WindowSizeMin.x || e.Height < WindowSizeMin.y)
-                isUpdate = true;
-
-            if (Window != null)
-            {
-                WINDOWPLACEMENT cmd = new WINDOWPLACEMENT();
-                cmd.Lenght = Marshal.SizeOf(cmd);
-                GetWindowPlacement(Window.SystemHandle, ref cmd);
-                WindowMaximize = cmd.showCmd == 3;
-            }
+            bool isUpdate = e.Width < WindowSizeMin.x || e.Height < WindowSizeMin.y;
 
             if (isUpdate)
             {
@@ -240,7 +234,7 @@ namespace Lun
                 Window.Close();
                 Window = new RenderWindow(VideoMode.DesktopMode, WindowTitle, Styles.Fullscreen,
                     new ContextSettings(32, 0, AntiAliasing));
-                Window.SetVerticalSyncEnabled(false);
+                Window.SetVerticalSyncEnabled(VerticalSync);
                 HandleEvents();
                 WindowFullscreen = true;
                 WindowSize = (Vector2)Window.Size;
@@ -276,8 +270,7 @@ namespace Lun
             Scene.LoadContent();
         }
 
-        public static T GetScene<T>() where T : SceneBase
-            => (T)Scene;
+        public static T GetScene<T>() where T : SceneBase => (T)Scene;
 
         public static void SetMouseVisible(bool value)
         {

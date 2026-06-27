@@ -9,15 +9,15 @@ namespace Lun
 {
     public static class Sound
     {
-        static SFML.Audio.Music musicDevice;                                        // Dispositivo de musica
-        static List<SFML.Audio.Sound> soundDevice = new List<SFML.Audio.Sound>();   // Dispositivo de som
-        static string cacheMusic = "";                                              // Cache de musica
+        static SFML.Audio.Music musicDevice; // Dispositivo de musica
+        static List<SFML.Audio.Sound> soundDevice = new List<SFML.Audio.Sound>(); // Dispositivo de som
+        static string cacheMusic = ""; // Cache de musica
 
         // Volumes
-        static byte vol_Music = 100;    // Volume da musica
-        static byte vol_Sound = 100;    // Volume dos soms
-        static bool use_Music = true;   // Usar música
-        static bool use_Sound = false;  // Usar sons
+        static byte vol_Music = 100; // Volume da musica
+        static byte vol_Sound = 100; // Volume dos soms
+        static bool use_Music = true; // Usar música
+        static bool use_Sound = false; // Usar sons
 
         /// <summary>
         /// Volume da musica
@@ -142,9 +142,10 @@ namespace Lun
         /// </summary>
         public static void StopSounds()
         {
-            if (soundDevice.Count > 0)
-                foreach (var i in soundDevice)
-                    i.Stop();
+            lock(soundDevice)
+                if (soundDevice.Count > 0)
+                    foreach (var i in soundDevice)
+                        i.Stop();
         }
 
         /// <summary>
@@ -152,18 +153,15 @@ namespace Lun
         /// </summary>
         internal static void ProcessSounds()
         {
-            if (soundDevice.Count > 0)
+            if (soundDevice.Count <= 0) return;
+            var soundends = soundDevice.Where(i => i != null && i.Status == SFML.Audio.SoundStatus.Stopped).ToList();
+            if (soundends.Count == 0) return;
+
+            foreach (var i in soundends)
             {
-                var soundends = soundDevice.Where(i => i != null && i.Status == SFML.Audio.SoundStatus.Stopped).ToList();
-                if (soundends.Count > 0)
-                    foreach (var i in soundends)
-                    {
-                        i.Dispose();
-                        soundDevice.Remove(i);
-                    }
+                i.Dispose();
+                soundDevice.Remove(i);
             }
         }
-
-
     }
 }

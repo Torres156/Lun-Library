@@ -2,35 +2,38 @@
 global using System;
 global using System.Collections.Generic;
 global using System.Linq;
-
-using Lun.SFML.Graphics;
-using Lun.SFML.Window;
 using Lun.Shapes;
 using System.Reflection;
 using System.Drawing;
+using System.Text;
+using System.Text.RegularExpressions;
+using SFML.Graphics;
+using SFML.Window;
 
 namespace Lun
 {
     public static class LunEngine
     {
         // Dispositivos
-        static readonly Sprite                _sprite      = new Sprite();
-        static readonly LargeSprite           _spritelarge = new LargeSprite();
-        static readonly RectangleShape        rec          = new RectangleShape();
-        static readonly CircleShape           cir          = new CircleShape();
-        static readonly RoundedRectangleShape roundrec     = new RoundedRectangleShape();
-        static readonly LineShape             lineshape    = new LineShape();
+        static readonly Sprite _sprite = new Sprite();
+        static readonly LargeSprite _spritelarge = new LargeSprite();
+        static readonly RectangleShape rec = new RectangleShape();
+        static readonly CircleShape cir = new CircleShape();
+        static readonly RoundedRectangleShape roundrec = new RoundedRectangleShape();
+        static readonly LineShape lineshape = new LineShape();
+        internal static readonly Dictionary<int, FontCache> fontCache = [];
 
-        internal static RenderTarget target;
+        public static RenderTarget currentTarget;
+        internal static List<Texture> cacheTextures = new List<Texture>();
 
-        static List<RenderTarget> renders = new List<RenderTarget>(); 
-        static List<Camera2D>     cams    = new List<Camera2D>();
+        static Stack<RenderTarget> renders = [];
+        static Stack<Camera2D> cams = [];
 
         static Camera2D currentCamera;
 
 
         // Vertices
-        static Vertex[] lines     = new Vertex[2];
+        static Vertex[] lines = new Vertex[2];
         static Vertex[] gradients = new Vertex[4];
 
 
@@ -38,6 +41,17 @@ namespace Lun
         internal static Font gameFont;
         internal static Text _text;
 
+        public static RenderStates currentRenderStates { get; private set; } = RenderStates.Default;
+
+        public static void BeginRenderStates(RenderStates states)
+        {
+            currentRenderStates = states;
+        }
+
+        public static void EndRenderStates()
+        {
+            currentRenderStates = RenderStates.Default;
+        }
 
         /// <summary>
         /// Desenha a textura
@@ -49,9 +63,11 @@ namespace Lun
         /// <param name="origin"></param>
         /// <param name="color"></param>
         /// <param name="states"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color, Vector2 origin, float rotation, RenderStates states)
+        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color,
+            Vector2 origin, float rotation)
         {
             if (texture == null) return;
+            texture.Load();
 
             if (texture.type == TextureTypes.Normal)
             {
@@ -64,7 +80,7 @@ namespace Lun
                 _sprite.Color = color;
                 _sprite.Origin = origin;
                 _sprite.Rotation = rotation;
-                target.Draw(_sprite, states);
+                currentTarget.Draw(_sprite, currentRenderStates);
             }
             else
             {
@@ -76,7 +92,7 @@ namespace Lun
                 _spritelarge.Color = color;
                 _spritelarge.Origin = origin;
                 _spritelarge.Rotation = rotation;
-                target.Draw(_spritelarge, states);
+                currentTarget.Draw(_spritelarge, currentRenderStates);
             }
         }
 
@@ -89,9 +105,9 @@ namespace Lun
         /// <param name="source"></param>
         /// <param name="color"></param>
         /// <param name="origin"></param>
-        /// <param name="rotation"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color, Vector2 origin, float rotation)
-            => DrawTexture(texture, destination, source, color, origin, rotation, RenderStates.Default);
+        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color,
+            Vector2 origin) =>
+            DrawTexture(texture, destination, source, color, origin, 0);
 
         /// <summary>
         /// Desenha a textura
@@ -101,9 +117,8 @@ namespace Lun
         /// <param name="destination"></param>
         /// <param name="source"></param>
         /// <param name="color"></param>
-        /// <param name="origin"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color, Vector2 origin)
-            => DrawTexture(texture, destination, source, color, origin, 0);
+        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color) =>
+            DrawTexture(texture, destination, source, color, Vector2.Zero);
 
         /// <summary>
         /// Desenha a textura
@@ -112,9 +127,8 @@ namespace Lun
         /// <param name="texture"></param>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        /// <param name="color"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source, Color color)
-            => DrawTexture(texture, destination, source, color, Vector2.Zero);
+        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source) =>
+            DrawTexture(texture, destination, source, Color.White);
 
         /// <summary>
         /// Desenha a textura
@@ -123,8 +137,8 @@ namespace Lun
         /// <param name="texture"></param>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination, Rectangle source)
-            => DrawTexture(texture, destination, source, Color.White);
+        public static void DrawTexture(Texture texture, Rectangle destination) =>
+            DrawTexture(texture, destination, new Rectangle(Vector2.Zero, texture.size), Color.White);
 
         /// <summary>
         /// Desenha a textura
@@ -132,46 +146,37 @@ namespace Lun
         /// <param name="target"></param>
         /// <param name="texture"></param>
         /// <param name="destination"></param>
-        /// <param name="source"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination)
-            => DrawTexture(texture, destination, new Rectangle(Vector2.Zero, texture.size), Color.White);
+        public static void DrawTexture(Texture texture, Rectangle destination, Color color) =>
+            DrawTexture(texture, destination, new Rectangle(Vector2.Zero, texture.size), color);
 
         /// <summary>
         /// Desenha a textura
         /// </summary>
         /// <param name="target"></param>
         /// <param name="texture"></param>
-        /// <param name="destination"></param>
-        public static void DrawTexture(Texture texture, Rectangle destination, Color color)
-            => DrawTexture(texture, destination, new Rectangle(Vector2.Zero, texture.size), color);
+        public static void DrawTexture(Texture texture, Vector2 position) =>
+            DrawTexture(texture, new Rectangle(position, texture.size));
 
         /// <summary>
         /// Desenha a textura
         /// </summary>
         /// <param name="target"></param>
         /// <param name="texture"></param>
-        public static void DrawTexture(Texture texture, Vector2 position)
-            => DrawTexture(texture, new Rectangle(position, texture.size));
-
-        /// <summary>
-        /// Desenha a textura
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="texture"></param>
-        public static void DrawTexture(Texture texture, Vector2 position, Color color)
-            => DrawTexture(texture, new Rectangle(position, texture.size), color);
+        public static void DrawTexture(Texture texture, Vector2 position, Color color) =>
+            DrawTexture(texture, new Rectangle(position, texture.size), color);
 
         public static void DrawRenderTexture(RenderTexture render, Vector2 position, Color color)
-        {            
+        {
             render.Texture.Smooth = true;
             _sprite.Texture = render.Texture;
             _sprite.Position = position;
             _sprite.Scale = Vector2.One;
-            _sprite.TextureRect = new IntRect(0,0, (int)render.Size.X, (int)render.Size.Y);
+            _sprite.TextureRect = new IntRect(0, 0, (int)render.Size.X, (int)render.Size.Y);
             _sprite.Color = color;
             _sprite.Origin = Vector2.Zero;
             _sprite.Rotation = 0;
-            target.Draw(_sprite, RenderStates.Default);
+
+            currentTarget.Draw(_sprite, currentRenderStates);
         }
 
         /// <summary>
@@ -183,7 +188,8 @@ namespace Lun
         /// <param name="color"></param>
         /// <param name="outlineThickness"></param>
         /// <param name="outlineColor"></param>
-        public static void DrawText(string text, int charactersize, Vector2 position, Color color, bool shadow = false, bool round = true)
+        public static void DrawText(string text, int charactersize, Vector2 position, Color color, bool shadow = false,
+            bool round = true)
         {
             if (_text == null)
                 throw new Exception("A font não foi carregada!");
@@ -191,20 +197,30 @@ namespace Lun
             if (text == null || text.Trim().Length == 0)
                 return;
 
-            _text.DisplayedString = text;
-            _text.CharacterSize = (uint)charactersize;            
-            _text.OutlineThickness = 0;
-
-            if (shadow)
+            FontCache _font = null; 
+            if (!fontCache.TryGetValue(charactersize, out _font))
             {
-                _text.FillColor = new Color(0, 0, 0, Math.Min((byte)200, color.A));
-                _text.Position = (round ? position.ToInt() : position) + new Vector2(1);
-                target.Draw(_text);
+                var cache = new FontCache(charactersize);
+                fontCache.Add(charactersize, cache);
+                _font = cache;
             }
+            
+            _font.DrawText(text, position, color, shadow);
 
-            _text.Position = round ? position.ToInt() : position;
-            _text.FillColor = color;
-            target.Draw(_text);
+            // _text.DisplayedString = text;
+            // _text.CharacterSize = (uint)charactersize;
+            // _text.OutlineThickness = 0;
+            //
+            // if (shadow)
+            // {
+            //     _text.FillColor = new Color(0, 0, 0, Math.Min((byte)200, color.A));
+            //     _text.Position = (round ? position.ToInt() : position) + new Vector2(1);
+            //     currentTarget.Draw(_text);
+            // }
+            //
+            // _text.Position = round ? position.ToInt() : position;
+            // _text.FillColor = color;
+            // currentTarget.Draw(_text, currentRenderStates);
         }
 
         /// <summary>
@@ -238,7 +254,8 @@ namespace Lun
                         color = new Color(byte.Parse(colorKey[0]), byte.Parse(colorKey[1]), byte.Parse(colorKey[2]));
 
                     if (colorKey.Length == 4)
-                        color = new Color(byte.Parse(colorKey[0]), byte.Parse(colorKey[1]), byte.Parse(colorKey[2]), byte.Parse(colorKey[3]));
+                        color = new Color(byte.Parse(colorKey[0]), byte.Parse(colorKey[1]), byte.Parse(colorKey[2]),
+                            byte.Parse(colorKey[3]));
 
                     off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
 
@@ -252,106 +269,99 @@ namespace Lun
                 DrawText(text, charactersize, position, color);
         }
 
-        public static void DrawBBColor(string text, int charactersize, Vector2 position)
-        {   
-            // Replaces
-            text = text.Replace("[color=white]", "[color=#FFFFFFFF]");
-            text = text.Replace("[color=black]", "[color=#000000FF]");
-            text = text.Replace("[color=red]", "[color=#FF0000FF]");
-            text = text.Replace("[color=green]", "[color=#00FF00FF]");
-            text = text.Replace("[color=blue]", "[color=#0000FFFF]");
-            
-            var colorList   = new List<Color>();
-           
-            int lengthTag   = "[color=#".Length;
-            float off       = 0;
+        public static void DrawBBColor(string text, int characterSize, Vector2 position, bool shadow = false)
+        {
+            var colorStack = new Stack<Color>();
+            colorStack.Push(Color.White);
 
-            colorList.Add(Color.White);          
+            // Translate colors
+            text = TranslateColors(text);
 
-            if (text.Contains("[color=#"))
+            float off = 0;
+            int i = 0;
+            int len = text.Length;
+
+            Span<char> buffer = stackalloc char[16]; // Temp buffer de leitura
+
+            while (i < len)
             {
-                bool haveColor    = false;
-                bool haveEndColor = false;
-
-                while ((haveColor = (text.Contains("[color=#") && text.Contains("]"))) | (haveEndColor = text.Contains("[/color]")))
-                {                       
-                    if (haveColor && !haveEndColor)
+                if (text[i] == '[')
+                {
+                    // Tenta detectar tag
+                    if (i + 7 < len && text[i..].StartsWith("[color="))
                     {
-                        var find        = text.IndexOf("[color=#");
-                        int lengthColor = text.Substring(find + lengthTag).IndexOf("]");
-                        var colorKey    = StrToByteArray(text.Substring(find + lengthTag, lengthColor));
-
-                        if (find > 0)
-                            DrawText(text.Substring(0, find), charactersize, position + new Vector2(off, 0), colorList.Last());
-
-                        if (colorKey.Length == 3)
-                            colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2]));
-                        else if (colorKey.Length == 4)
-                            colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2], colorKey[3]));
-
-                        off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
-                        text = text.Remove(0, find + lengthTag + lengthColor + 1);
-                    }
-                    else if (!haveColor && haveEndColor)
-                    {
-                        var find        = text.IndexOf("[/color]");
-
-                        if (find > 0)
-                            DrawText(text.Substring(0, find), charactersize, position + new Vector2(off, 0), colorList.Last());
-
-                        if (colorList.Count > 1)
-                            colorList.RemoveAt(colorList.Count - 1);
-                        off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
-                        text = text.Remove(0, find + "[/color]".Length);
-                    }
-                    else if (haveColor && haveEndColor)
-                    {
-                        var find    = text.IndexOf("[color=#");
-                        var findEnd = text.IndexOf("[/color]");
-
-                        if (find < findEnd)
+                        int startTag = i;
+                        int tagClose = text.IndexOf(']', i);
+                        if (tagClose > i + 7)
                         {
-                            int lengthColor = text.Substring(find + lengthTag).IndexOf("]");
-                            var colorKey    = StrToByteArray( text.Substring(find + lengthTag, lengthColor));
+                            string tagContent = text.Substring(i + 7, tagClose - (i + 7));
 
-                            if (find > 0)
-                                DrawText(text.Substring(0, find), charactersize, position + new Vector2(off, 0), colorList.Last());
+                            // Desenha antes da tag
+                            if (startTag > 0)
+                            {
+                                string before = text.Substring(0, startTag);
+                                DrawText(before, characterSize, position + new Vector2(off, 0), colorStack.Peek(),
+                                    shadow: shadow);
+                                off += GetTextWidth(before, (uint)characterSize);
+                                text = text.Substring(startTag + 0); // corta já processado
+                                i = 0;
+                                len = text.Length;
+                                continue;
+                            }
 
-                            if (colorKey.Length == 3)
-                                colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2]));
-                            else if (colorKey.Length == 4)
-                                colorList.Add(new Color(colorKey[0], colorKey[1], colorKey[2], colorKey[3]));
+                            // Parse cor
+                            if (tagContent.StartsWith("#") && (tagContent.Length == 7 || tagContent.Length == 9))
+                            {
+                                ReadOnlySpan<char> hex = tagContent.AsSpan(1);
+                                Span<byte> rgba = stackalloc byte[4];
+                                for (int j = 0; j < hex.Length / 2; j++)
+                                    rgba[j] = Convert.ToByte(hex.Slice(j * 2, 2).ToString(), 16);
 
+                                if (hex.Length == 6)
+                                    colorStack.Push(new Color(rgba[0], rgba[1], rgba[2]));
+                                else
+                                    colorStack.Push(new Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+                            }
 
-                            off += GetTextWidth(text.Substring(0, find), (uint)charactersize);
-                            text = text.Remove(0, find + lengthTag + lengthColor + 1);
+                            text = text.Substring(tagClose + 1);
+                            i = 0;
+                            len = text.Length;
+                            continue;
                         }
-                        else
+                    }
+                    else if (i + 7 < len && text[i..].StartsWith("[/color]"))
+                    {
+                        // Desenha texto antes do fechamento
+                        string before = text.Substring(0, i);
+                        if (before.Length > 0)
                         {
-                            if (findEnd > 0)
-                                DrawText(text.Substring(0, findEnd), charactersize, position + new Vector2(off, 0), colorList.Last());
-
-                            if (colorList.Count > 1)
-                                colorList.RemoveAt(colorList.Count - 1);
-
-                            off += GetTextWidth(text.Substring(0, findEnd), (uint)charactersize);
-                            text = text.Remove(0, findEnd + "[/color]".Length);
+                            DrawText(before, characterSize, position + new Vector2(off, 0), colorStack.Peek(),
+                                shadow: shadow);
+                            off += GetTextWidth(before, (uint)characterSize);
                         }
+
+                        if (colorStack.Count > 1)
+                            colorStack.Pop();
+
+                        text = text.Substring(i + 8);
+                        i = 0;
+                        len = text.Length;
+                        continue;
                     }
                 }
 
-                if (text.Length > 0)
-                    DrawText(text, charactersize, position + new Vector2(off, 0), colorList.Last());
-            }
-            else
-            {
-                DrawText(text, charactersize, position, colorList.Last());
+                i++;
             }
 
+            // Resto do texto
+            if (text.Length > 0)
+                DrawText(text, characterSize, position + new Vector2(off, 0), colorStack.Peek(), shadow: shadow);
         }
+
 
         public static byte[] StrToByteArray(string str)
         {
+            str = str.ToUpper();
             Dictionary<string, byte> hexindex = new Dictionary<string, byte>();
             for (int i = 0; i <= 255; i++)
                 hexindex.Add(i.ToString("X2"), (byte)i);
@@ -374,7 +384,7 @@ namespace Lun
             for (int i = 0; i < 4; i++)
                 gradients[i] = new Vertex(pos[i], color[i]);
 
-            target.Draw(gradients, PrimitiveType.Quads);
+            currentTarget.Draw(gradients, PrimitiveType.Quads);
         }
 
         /// <summary>
@@ -389,9 +399,10 @@ namespace Lun
         /// <param name="color3"></param>
         /// <param name="pos4"></param>
         /// <param name="color4"></param>
-        public static void DrawGradient(Vector2 pos1, Color color1, Vector2 pos2, Color color2, Vector2 pos3, Color color3,
-            Vector2 pos4, Color color4)
-            => DrawGradient(new Vector2[] { pos1, pos2, pos3, pos4 }, new Color[] { color1, color2, color3, color4 });
+        public static void DrawGradient(Vector2 pos1, Color color1, Vector2 pos2, Color color2, Vector2 pos3,
+            Color color3,
+            Vector2 pos4, Color color4) =>
+            DrawGradient(new Vector2[] { pos1, pos2, pos3, pos4 }, new Color[] { color1, color2, color3, color4 });
 
         /// <summary>
         /// Desenha uma linha
@@ -406,7 +417,7 @@ namespace Lun
             lines[0] = new Vertex(pos1 + new Vector2(.5f), color1);
             lines[1] = new Vertex(pos2 + new Vector2(.5f), color2);
 
-            target.Draw(lines, 0, 2, PrimitiveType.Lines);
+            currentTarget.Draw(lines, 0, 2, PrimitiveType.Lines);
         }
 
         /// <summary>
@@ -416,14 +427,13 @@ namespace Lun
         /// <param name="pos1"></param>
         /// <param name="pos2"></param>
         /// <param name="color"></param>
-        public static void DrawLine(Vector2 pos1, Vector2 pos2, Color color)
-            => DrawLine(pos1, color, pos2, color);
+        public static void DrawLine(Vector2 pos1, Vector2 pos2, Color color) => DrawLine(pos1, color, pos2, color);
 
         public static void DrawLineShape(Vector2 pos1, Vector2 pos2, Color color, float thickness = 1f)
         {
             var angle = MathF.Atan2(pos2.y - pos1.y, pos2.x - pos1.x) * 180f / MathF.PI;
             var h = MathF.Sqrt(MathF.Pow(pos1.x - pos2.x, 2) +
-                MathF.Pow(pos1.y - pos2.y, 2f));
+                               MathF.Pow(pos1.y - pos2.y, 2f));
 
             rec.FillColor = color;
             rec.Position = pos1;
@@ -431,7 +441,7 @@ namespace Lun
             rec.Size = new Vector2(h, thickness);
             rec.Rotation = angle;
             rec.OutlineThickness = 0;
-            target.Draw(rec);
+            currentTarget.Draw(rec, currentRenderStates);
         }
 
         /// <summary>
@@ -443,7 +453,8 @@ namespace Lun
         /// <param name="fillColor"></param>
         /// <param name="outlineThickness"></param>
         /// <param name="outlineColor"></param>
-        public static void DrawRectangle(Vector2 position, Vector2 size, Color fillColor, float outlineThickness, Color outlineColor)
+        public static void DrawRectangle(Vector2 position, Vector2 size, Color fillColor, float outlineThickness,
+            Color outlineColor)
         {
             rec.Position = position.Floor();
             rec.Size = size;
@@ -451,7 +462,7 @@ namespace Lun
             rec.OutlineThickness = outlineThickness;
             rec.OutlineColor = outlineColor;
             rec.Rotation = 0;
-            target.Draw(rec);
+            currentTarget.Draw(rec, currentRenderStates);
         }
 
         /// <summary>
@@ -461,8 +472,8 @@ namespace Lun
         /// <param name="position"></param>
         /// <param name="size"></param>
         /// <param name="fillColor"></param>
-        public static void DrawRectangle(Vector2 position, Vector2 size, Color fillColor)
-            => DrawRectangle(position, size, fillColor, 0, Color.Transparent);
+        public static void DrawRectangle(Vector2 position, Vector2 size, Color fillColor) =>
+            DrawRectangle(position, size, fillColor, 0, Color.Transparent);
 
         /// <summary>
         /// Desenha um retângulo arredondado
@@ -473,7 +484,8 @@ namespace Lun
         /// <param name="fillColor"></param>
         /// <param name="outlineThickness"></param>
         /// <param name="outlineColor"></param>
-        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius, uint pointcount, float outlineThickness, Color outlineColor)
+        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius,
+            uint pointcount, float outlineThickness, Color outlineColor)
         {
             if (radius == 0)
                 DrawRectangle(position, size, fillColor, outlineThickness, outlineColor);
@@ -486,7 +498,7 @@ namespace Lun
             roundrec.cornerPointCount = pointcount;
             roundrec.OutlineThickness = outlineThickness;
             roundrec.OutlineColor = outlineColor;
-            target.Draw(roundrec);
+            currentTarget.Draw(roundrec, currentRenderStates);
         }
 
         /// <summary>
@@ -498,8 +510,9 @@ namespace Lun
         /// <param name="fillColor"></param>
         /// <param name="radius"></param>
         /// <param name="pointcount"></param>
-        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius, uint pointcount)
-            => DrawRoundedRectangle(position, size, fillColor, radius, pointcount, 0, Color.Transparent);
+        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius,
+            uint pointcount) =>
+            DrawRoundedRectangle(position, size, fillColor, radius, pointcount, 0, Color.Transparent);
 
         /// <summary>
         /// Desenha um retângulo arredondado
@@ -510,7 +523,8 @@ namespace Lun
         /// <param name="fillColor"></param>
         /// <param name="outlineThickness"></param>
         /// <param name="outlineColor"></param>
-        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius_top, float radius_bottom,
+        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius_top,
+            float radius_bottom,
             uint pointcount, float outlineThickness, Color outlineColor)
         {
             roundrec.Position = position.Floor();
@@ -521,11 +535,13 @@ namespace Lun
             roundrec.cornerPointCount = pointcount;
             roundrec.OutlineThickness = outlineThickness;
             roundrec.OutlineColor = outlineColor;
-            target.Draw(roundrec);
+            currentTarget.Draw(roundrec, currentRenderStates);
         }
 
-        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius_top, float radius_bottom, uint pointcount)
-            => DrawRoundedRectangle(position, size, fillColor, radius_top, radius_bottom, pointcount, 0, Color.Transparent);
+        public static void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius_top,
+            float radius_bottom, uint pointcount) =>
+            DrawRoundedRectangle(position, size, fillColor, radius_top, radius_bottom, pointcount, 0,
+                Color.Transparent);
 
         /// <summary>
         /// Desenha um circulo
@@ -536,7 +552,8 @@ namespace Lun
         /// <param name="fillColor"></param>
         /// <param name="outlineThickness"></param>
         /// <param name="outlineColor"></param>
-        public static void DrawCircle(Vector2 position, float radius, Color fillColor, float outlineThickness, Color outlineColor)
+        public static void DrawCircle(Vector2 position, float radius, Color fillColor, float outlineThickness,
+            Color outlineColor)
         {
             cir.SetPointCount(360);
             cir.Position = position.Floor();
@@ -545,11 +562,11 @@ namespace Lun
             cir.FillColor = fillColor;
             cir.OutlineThickness = outlineThickness;
             cir.OutlineColor = outlineColor;
-            target.Draw(cir);
+            currentTarget.Draw(cir, currentRenderStates);
         }
 
-        public static void DrawCircle(Vector2 position, float radius, Color fillColor)
-            => DrawCircle(position, radius, fillColor, 0, Color.Transparent);
+        public static void DrawCircle(Vector2 position, float radius, Color fillColor) =>
+            DrawCircle(position, radius, fillColor, 0, Color.Transparent);
 
         /// <summary>
         /// Comprimento do Texto
@@ -557,23 +574,34 @@ namespace Lun
         /// <param name="text"></param>
         /// <param name="characterSize"></param>
         /// <returns></returns>
-        public static float GetTextWidth(string text, uint characterSize = 11)
+        public static float GetTextWidth(string text, uint characterSize = 11, bool ignoreBB = false)
         {
             if (text.Trim().Length == 0)
                 return 0;
 
-            if (text.Contains("[color=") && text.Contains("]"))
-            while (text.Contains("[color=") && text.Contains("]"))
-                text = text.Remove(text.IndexOf("[color="), text.IndexOf("]") - text.IndexOf("[color="));
+            if (!ignoreBB)
+                text = FilterTextBBColor(text);
 
-            if (text.Contains("[/color]"))
-                while (text.Contains("[/color]"))
-                    text = text.Remove(text.IndexOf("[/color]"), "[/color]".Length);
+            FontCache _font = null; 
+            if (!fontCache.TryGetValue((int)characterSize, out _font))
+            {
+                var cache = new FontCache((int)characterSize);
+                fontCache.Add((int)characterSize, cache);
+                _font = cache;
+            }
 
-            _text.CharacterSize = characterSize;
-            _text.DisplayedString = text;
+            return _font.GetTextWidth(text, ignoreBB);
+        }
 
-            return _text.FindCharacterPos((uint)text.Length).X.Floor();
+        private static readonly Regex BbTagRegex = new(@"\[[^]]+\]", RegexOptions.Compiled);
+
+        private static readonly Regex ColorTagRegex =
+            new(@"<color=#.*?>|<\/color>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        public static string FilterTextBBColor(string text)
+        {
+            text = BbTagRegex.Replace(text, "");
+            return ColorTagRegex.Replace(text, "");
         }
 
         /// <summary>
@@ -586,6 +614,8 @@ namespace Lun
         {
             if (text.Trim().Length == 0)
                 return 0;
+
+            text = FilterTextBBColor(text);
 
             _text.CharacterSize = characterSize;
             _text.DisplayedString = text;
@@ -632,8 +662,10 @@ namespace Lun
                     else
                         line += i + " ";
                 }
+
                 if (line.Length > 0) collection.Add(line.Trim());
             }
+
             return collection.ToArray();
         }
 
@@ -686,65 +718,155 @@ namespace Lun
                         linetrue += i + " ";
                     }
                 }
+
                 if (linetrue.Length > 0) collection.Add(linetrue.Trim());
             }
+
             return collection.ToArray();
         }
 
-        public static string[] GetWordWrapBBColor(string text, int width, uint characterSize = 11)
+        private static readonly Dictionary<string, string> colorsKey = new()
         {
-            var collection = new List<string>();
-            if (text.Length > 0)
+            { "white", "#ffffff" }, { "black", "#000000" }, { "red", "#ff0000" }, { "green", "#00ff00" },
+            { "blue", "#0000ff" }, { "magenta", "#ff00e4" }, { "yellow", "#fffb00" }, { "gray", "#c1c1c1" },
+        };
+
+        private static readonly Regex TranslateColorRegex = new(@"\[color=(\w+)\]", RegexOptions.Compiled);
+
+        public static string TranslateColors(string text)
+        {
+            return TranslateColorRegex.Replace(text, match =>
             {
-                var words = text.Split();
-                string line = "";
-                string linetrue = "";
-                var copyColor = "";
-                foreach (var i in words)
+                string colorName = match.Groups[1].Value.ToLower();
+                if (colorsKey.TryGetValue(colorName, out var hex))
+                    return $"[color={hex}]";
+                return match.Value; // mantém original se não for uma cor conhecida
+            });
+        }
+
+        public static string[] GetWordWrapBBColor(string text, int width, int characterSize = 12)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrWhiteSpace(text))
+                return result.ToArray();
+
+            // Traduz nomes de cor para hex
+            text = TranslateColors(text);
+
+            var colorStack = new Stack<string>();
+            var trueLineBuilder = new StringBuilder();
+
+            int i = 0;
+            int len = text.Length;
+            string currentWord = "";
+            string currentVisible = "";
+
+            while (i < len)
+            {
+                char c = text[i];
+
+                // Espaço
+                if (char.IsWhiteSpace(c))
                 {
-                    //float off = 0;
-                    var wordTrue = i;
+                    ProcessWord(currentWord);
+                    currentWord = "";
+                    i++;
+                    continue;
+                }
 
-                    if (i == "/n")
-                    {
-                        collection.Add(linetrue.Trim());
-                        linetrue = "";
-                        line = "";
-                        continue;
-                    }
+                // Quebra de linha "/n"
+                if (c == '/' && i + 1 < len && text[i + 1] == 'n')
+                {
+                    ProcessWord(currentWord);
+                    AddLine();
+                    currentWord = "";
+                    i += 2;
+                    continue;
+                }
 
-                    while (wordTrue.Contains("[color=") && wordTrue.Contains("]"))
-                    {
-                        var find = wordTrue.IndexOf("[color=");
-                        var findEnd = wordTrue.Substring(find).IndexOf("]");
-                        copyColor = wordTrue.Substring(find, findEnd + 1);
-                        wordTrue = wordTrue.Remove(find, findEnd + 1);
-                    }
+                currentWord += c;
+                i++;
+            }
 
-                    while (wordTrue.Contains("[/color]"))
-                    {
-                        var find = wordTrue.IndexOf("[/color]");
-                        var findEnd = "[/color]".Length;
-                        copyColor = wordTrue.Substring(find, findEnd);
-                        wordTrue = wordTrue.Remove(find, findEnd);
-                    }
+            if (trueLineBuilder.Length > 0)
+            {
+                var lastColor = colorStack.Count > 0 ? colorStack.Pop() : null;
+                if (lastColor != null) currentWord = lastColor.ToString() + currentWord;
 
-                    if (GetTextWidth(line + wordTrue, characterSize) > width)
+                // Última palavra e linha
+                if (currentWord.Length > 0)
+                    ProcessWord(currentWord);
+
+                string closingTags = string.Concat(Enumerable.Repeat("[/color]", colorStack.Count));
+                string finalLine = trueLineBuilder.ToString().TrimEnd() + closingTags;
+
+                result.Add(finalLine.TrimEnd());
+            }
+
+            return result.ToArray();
+
+            // ===== Subfunções internas =====
+
+            void ProcessWord(string word)
+            {
+                if (string.IsNullOrEmpty(word)) return;
+
+                string rawWord = word;
+
+                // Detecta e trata [color=...] e [/color]
+                if (word.Contains("[color="))
+                {
+                    int start = word.IndexOf("[color=");
+                    int end = word.IndexOf(']', start);
+                    if (start >= 0 && end > start)
                     {
-                        collection.Add(linetrue.Trim());
-                        line = wordTrue + " ";
-                        linetrue = copyColor + i + " ";
-                    }
-                    else
-                    {
-                        line += wordTrue + " ";
-                        linetrue += i + " ";
+                        string tag = word.Substring(start, end - start + 1);
+                        colorStack.Push(tag);
+                        rawWord = word.Remove(start, end - start + 1);
                     }
                 }
-                if (linetrue.Length > 0) collection.Add(linetrue.Trim());
+
+                if (word.Contains("[/color]"))
+                {
+                    int end = word.IndexOf("[/color]");
+                    rawWord = word.Remove(end, "[/color]".Length);
+                    if (colorStack.Count > 0)
+                        colorStack.Pop();
+                }
+
+                // Mede linha visível (sem tags)
+                float testWidth = GetTextWidth(currentVisible + rawWord, (uint)characterSize);
+
+                if (testWidth > width && currentVisible.Length > 0)
+                {
+                    AddLine();
+                    currentVisible = rawWord + " ";
+                    var colorString = GetAllCurrentColorTags();
+                    if (!string.IsNullOrWhiteSpace(colorString) && word.Contains(colorString))
+                        word = word.Replace(colorString, "");
+                    trueLineBuilder.Append(GetAllCurrentColorTags()).Append(word).Append(' ');
+                }
+                else
+                {
+                    currentVisible += rawWord + " ";
+                    trueLineBuilder.Append(word).Append(' ');
+                }
             }
-            return collection.ToArray();
+
+            void AddLine()
+            {
+                result.Add(trueLineBuilder.ToString().TrimEnd());
+                trueLineBuilder.Clear();
+                currentVisible = "";
+                // NÃO reabre tags aqui. Elas são reabertas por `ProcessWord`
+            }
+
+            string GetAllCurrentColorTags()
+            {
+                return colorStack.Count > 0 ? string.Join("", colorStack.Reverse()) : "";
+            }
         }
+
 
         /// <summary>
         /// Word Wrap
@@ -769,12 +891,15 @@ namespace Lun
                     else
                         line += i;
                 }
+
                 if (line.Length > 0) collection.Add(line.Trim());
             }
+
             return collection.ToArray();
         }
 
         static Random random = new Random();
+
         public static int Rand(int min, int max)
         {
             int min_real = Math.Min(min, max);
@@ -822,11 +947,9 @@ namespace Lun
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static float Floor(this float obj)
-            => (float)Math.Floor(obj);
+        public static float Floor(this float obj) => (float)Math.Floor(obj);
 
-        public static float Round(this float obj)
-            => (float)Math.Round(obj, 2);
+        public static float Round(this float obj) => (float)Math.Round(obj, 2);
 
         /// <summary>
         /// Valor numérico ou não
@@ -844,8 +967,7 @@ namespace Lun
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static int ToInt32(this string s)
-            => int.Parse(s);
+        public static int ToInt32(this string s) => int.Parse(s);
 
         /// <summary>
         /// Escreve um vetor 2D
@@ -863,8 +985,7 @@ namespace Lun
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Vector2 ReadVector2(this System.IO.BinaryReader s)
-            => new Vector2(s.ReadSingle(), s.ReadSingle());
+        public static Vector2 ReadVector2(this System.IO.BinaryReader s) => new Vector2(s.ReadSingle(), s.ReadSingle());
 
         /// <summary>
         /// Escreve um retângulo
@@ -882,24 +1003,22 @@ namespace Lun
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Rectangle ReadRectangle(this System.IO.BinaryReader s)
-            => new Rectangle(s.ReadVector2(), s.ReadVector2());
+        public static Rectangle ReadRectangle(this System.IO.BinaryReader s) =>
+            new Rectangle(s.ReadVector2(), s.ReadVector2());
 
         /// <summary>
         /// Escreve uma cor
         /// </summary>
         /// <param name="s"></param>
         /// <param name="value"></param>
-        public static void Write(this System.IO.BinaryWriter s, Color value)
-            => s.Write(value.ToInteger());
+        public static void Write(this System.IO.BinaryWriter s, Color value) => s.Write(value.ToInteger());
 
         /// <summary>
         /// Le uma cor
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Color ReadColor(this System.IO.BinaryReader s)
-            => new Color(s.ReadUInt32());
+        public static Color ReadColor(this System.IO.BinaryReader s) => new Color(s.ReadUInt32());
 
         /// <summary>
         /// Escreve um array de string
@@ -932,28 +1051,27 @@ namespace Lun
         /// <param name="filename"></param>
         public static void LoadFont(string filename)
         {
-            var f = new Font(filename);            
+            var f = new Font(filename);
             gameFont = f;
             _text = new Text("", gameFont);
             //_text.LetterSpacing = 0;
-            
         }
 
         public static RenderTexture CreateRender2D(int Width, int Height)
         {
-            return new RenderTexture((uint)Width, (uint)Height, new ContextSettings(32,8, Game.AntiAliasing));
+            return new RenderTexture((uint)Width, (uint)Height, new ContextSettings(32, 8, Game.AntiAliasing));
         }
 
         public static void ClearColor(Color color)
         {
-            target?.Clear(color);
+            currentTarget?.Clear(color);
         }
 
         public static void BeginRender(RenderTarget target)
         {
-            renders.Add(LunEngine.target);
+            renders.Push(LunEngine.currentTarget);
 
-            LunEngine.target = target;
+            LunEngine.currentTarget = target;
         }
 
         public static void EndRender()
@@ -961,37 +1079,34 @@ namespace Lun
             if (renders.Count == 0)
                 return;
 
-            if (target is RenderTexture)
-                (target as RenderTexture).Display();
+            if (currentTarget is RenderWindow window)
+                window.Display();
+            else if (currentTarget is RenderTexture texture)
+                texture.Display();
 
-            if (target is RenderWindow)
-                (target as RenderWindow).Display();
-
-            target = renders.Last();
-            renders.Remove(target);
+            currentTarget = renders.Pop();
+            //renders.Remove(target);
         }
 
         public static void BeginCamera(Camera2D camera)
         {
-            cams.Add(currentCamera);
+            cams.Push(currentCamera);
             currentCamera = camera;
-            target.SetView(camera.view);
+            currentTarget.SetView(camera.view);
         }
 
         public static void EndCamera()
         {
             if (cams.Count == 0)
                 return;
-                  
-            var lastCam = cams.Last();
+
+            var lastCam = cams.Pop();
             if (lastCam != null)
-                target.SetView(lastCam.view);
+                currentTarget.SetView(lastCam.view);
 
             currentCamera = lastCam;
-            cams.Remove(lastCam);
         }
 
-        public static int TickCount
-            => Environment.TickCount < 0 ? Environment.TickCount & int.MaxValue : Environment.TickCount;
+        public static int TickCount => Game.Clock.ElapsedTime.AsMilliseconds();
     }
 }

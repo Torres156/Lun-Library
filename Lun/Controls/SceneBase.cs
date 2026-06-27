@@ -1,4 +1,6 @@
-﻿namespace Lun.Controls
+﻿using SFML.Graphics;
+
+namespace Lun.Controls
 {
     using SFML.Window;
     using static LunEngine;
@@ -63,7 +65,7 @@
             priority?.Draw();
 
             if (isAlert)
-                Draw_Alert(target);
+                Draw_Alert();
         }
 
         /// <summary>
@@ -102,13 +104,13 @@
                         if (e.Unicode.IsNumeric())
                         {
                             tbox.Text = tbox.Text.Insert(TextBox.Focus.Character_CurrentIndex, e.Unicode);
-                            tbox.Character_CurrentIndex++;
+                            tbox.RequestRight();
                         }
                     }
                     else
                     {
                         tbox.Text = tbox.Text.Insert(tbox.Text.Length > 0 ? TextBox.Focus.Character_CurrentIndex : 0, e.Unicode);
-                        tbox.Character_CurrentIndex++;
+                        tbox.RequestRight();
                     }
 
                 }
@@ -121,7 +123,7 @@
                         if (tbox.Character_CurrentIndex > 0)
                         {
                             tbox.Text = tbox.Text.Remove(tbox.Character_CurrentIndex - 1, 1);
-                            tbox.Character_CurrentIndex--;
+                            tbox.RequestLeft();
                         }
                     }
 
@@ -136,7 +138,7 @@
         /// Desenha o alerta
         /// </summary>
         /// <param name="target"></param>
-        protected virtual void Draw_Alert(RenderTarget target)
+        protected virtual void Draw_Alert()
         {
             // Fundo
             DrawRectangle(new Vector2(), Size, new Color(0, 0, 0, 210));
@@ -258,13 +260,12 @@
                 return true;
             }
 
-            if (priority != null && priority.Visible && priority.MouseReleased(e)) return true;
+            if (priority is { Visible: true } && priority.MouseReleased(e)) return true;
 
-            if (priority != null && priority.Visible && priority is ComboBox &&
-                (priority as ComboBox).isOpen)
+            if (priority is { Visible: true } and ComboBox { isOpen: true } priorityCombo)
             {
-                (priority as ComboBox).isOpen = false;
-                (priority as ComboBox).Size = new Vector2(priority.Size.x, 0);
+                priorityCombo.isOpen = false;
+                priorityCombo.Size = new Vector2(priority.Size.x, 0);
                 priority = null;
             }
 
@@ -290,33 +291,35 @@
             var tBox = TextBox.Focus;
             if (tBox != null)
             {
+                if (e.Control && e.Code == Keyboard.Key.C) return;
+                if (e.Control && e.Code == Keyboard.Key.V) return;
+                
                 if (e.Code == Keyboard.Key.Left)
-                {
-                    if (tBox.Character_CurrentIndex > 0)
-                        tBox.Character_CurrentIndex--;
-                }
+                    tBox.RequestLeft();
 
                 if (e.Code == Keyboard.Key.Right)
-                {
-                    if (tBox.Character_CurrentIndex < tBox.Text.Length)
-                        tBox.Character_CurrentIndex++;
-                }
-
+                    tBox.RequestRight();
 
                 if (e.Code == Keyboard.Key.End)
                 {
                     tBox.Character_CurrentIndex = tBox.Text.Length;
+                   // tBox.XoffSet = tBox.Character_CurrentIndex;
+                    tBox.RequestRight(false);
                 }
 
                 if (e.Code == Keyboard.Key.Home)
                 {
                     tBox.Character_CurrentIndex = 0;
+                    tBox.XoffSet = 0;
                 }
 
                 if (e.Code == Keyboard.Key.Delete)
                 {
                     if (tBox.Character_CurrentIndex < tBox.Text.Length)
+                    {
                         tBox.Text = tBox.Text.Remove(tBox.Character_CurrentIndex, 1);
+                        tBox.RequestLeft(false);
+                    }
                 }
 
             }
@@ -326,10 +329,24 @@
         public virtual void KeyReleased(KeyEventArgs e)
         {
             var tBox = TextBox.Focus;
-            if (tBox != null)
+            if (tBox == null) return;
+            if (e.Code == Keyboard.Key.Enter)
+                tBox.EnterPress();
+
+            if (e.Control && e.Code == Keyboard.Key.C)
+                Clipboard.Contents = tBox.Text;
+            
+            if (e.Control && e.Code == Keyboard.Key.V && Clipboard.Contents.Length > 0)
             {
-                if (e.Code == Keyboard.Key.Enter)
-                    tBox.EnterPress();
+                var clip = Clipboard.Contents;
+                var maxLength = clip.Length;
+                if (tBox.MaxLength > 0 && tBox.Text.Length + clip.Length > tBox.MaxLength)
+                    maxLength = tBox.MaxLength - tBox.Text.Length;
+                if (maxLength <= 0) return;
+                
+                tBox.Text = tBox.Text.Insert(tBox.Character_CurrentIndex, Clipboard.Contents[..maxLength]);
+                tBox.Character_CurrentIndex += maxLength;
+                tBox.RequestRight(false);
             }
         }
 

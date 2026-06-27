@@ -1,4 +1,6 @@
-﻿namespace Lun.Controls
+﻿using SFML.Window;
+
+namespace Lun.Controls
 {
     public class Button : Bond
     {

@@ -46,8 +46,6 @@ namespace Lun.Animation
                     Texture[i] = new Texture(new SFML.Graphics.Texture(animData.Data[i].Data)) { Smooth = true };
             }
 
-            GC.SuppressFinalize(animData);
-            animData = null;
         }
 
         public AnimationTexture(byte[] data)
@@ -63,9 +61,6 @@ namespace Lun.Animation
                 for (int i = 0; i < FrameCount; i++)
                     Texture[i] = new Texture(new SFML.Graphics.Texture(animData.Data[i].Data)) { Smooth = true };
             }
-
-            GC.SuppressFinalize(animData);
-            animData = null;
         }
     }
 }

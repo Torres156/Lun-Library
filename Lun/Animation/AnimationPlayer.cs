@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SFML.Graphics;
 
 namespace Lun.Animation
 {
@@ -76,7 +77,7 @@ namespace Lun.Animation
         /// <summary>
         /// Tempo de frame
         /// </summary>
-        int Frame_Timer = 0;
+        long Frame_Timer = 0;
 
 
         /// <summary>
@@ -125,9 +126,29 @@ namespace Lun.Animation
 
             if (Frame_current > Frame_End) return;
             var texture = animation.Texture[Frame_current];
+
+            BeginRenderStates(Blend ? new RenderStates(BlendMode.Add) : RenderStates.Default);
+
             DrawTexture(texture, new Rectangle(Position, texture.size * Scale),
-                new Rectangle(Vector2.Zero, texture.size), Color, Origin, Rotation,
-                Blend ? new RenderStates(BlendMode.Add) : RenderStates.Default);
+                new Rectangle(Vector2.Zero, texture.size), Color, Origin, Rotation);
+
+            EndRenderStates();
+        }
+
+        public void Draw(Batcher2D batcher)
+        {
+            if (Destroy) return;
+            Update();
+
+            if (Frame_current > Frame_End) return;
+            var texture = animation.Texture[Frame_current];
+
+            // BeginRenderStates(Blend ? new RenderStates(BlendMode.Add) : RenderStates.Default);
+
+            batcher.DrawTexture(texture, new Rectangle(Position, texture.size * Scale),
+                new Rectangle(Vector2.Zero, texture.size), Origin, Color, (int)Rotation);
+
+            //EndRenderStates();
         }
 
         /// <summary>
@@ -135,10 +156,11 @@ namespace Lun.Animation
         /// </summary>
         void Update()
         {
-            if (Frame_current < Frame_Start) Frame_Start = 0;
-            if (Frame_End >= animation.FrameCount) Frame_End = animation.FrameCount - 1; // Debug
 
-            if (Environment.TickCount > Frame_Timer)
+            if (Frame_current < Frame_Start) Frame_current = Frame_Start;
+            if (Frame_End >= animation.FrameCount) Frame_End = animation.Texture.Length - 1; // Debug
+
+            if (Environment.TickCount64 > Frame_Timer)
             {
                 Frame_current++;
                 if (Frame_current > Frame_End)
@@ -147,19 +169,14 @@ namespace Lun.Animation
                         Frame_current = Frame_Start;
                     else
                     {
-                        if (Repeat == 0) // Sem repetição                    
+                        repeat_current++;
+                        if (repeat_current > Repeat)
                             Destroy = true;
                         else
-                        {
-                            repeat_current++;
-                            if (repeat_current > Repeat)
-                                Destroy = true;
-                            else
-                                Frame_current = Frame_Start;
-                        }
+                            Frame_current = Frame_Start;
                     }
                 }
-                Frame_Timer = Environment.TickCount + Speed;
+                Frame_Timer = Environment.TickCount64 + Speed;
             }
         }
 

@@ -67,8 +67,43 @@ namespace Lun.Animation
             CurrentKey = key;
 
             // Desenha a sprite
-            DrawTexture(texture, new Rectangle(Position, frames[frame_current].size * Scale), frames[frame_current], color, origin, rotation,
-                RenderStates.Default);
+            DrawTexture(texture, new Rectangle(Position, frames[frame_current].size * Scale), frames[frame_current], color, origin, rotation);
+
+            // Processa os frames
+            if (TickCount > frame_currenttimer)
+            {
+                frame_current++;
+                frame_currenttimer = TickCount + frame_timer;
+            }
+        }
+
+        public void Play(Batcher2D batcher, string key, bool random = false)
+        {
+            if (!collection.ContainsKey(key))
+                return;
+
+            // Reseta caso seja outra animação
+            if (frame_key != key)
+            {
+                frame_current = 0;
+                frame_key = key;
+            }
+
+            var frames = collection[frame_key];
+
+            // Reset
+            if (frame_current >= frames.Length)
+            {
+                if (repeat)
+                    frame_current = 0;
+                else
+                    return;
+            }
+
+            CurrentKey = key;
+
+            // Desenha a sprite
+            batcher.DrawTexture(texture, new Rectangle(Position, frames[frame_current].size * Scale), frames[frame_current], origin, color, (int)rotation);
 
             // Processa os frames
             if (TickCount > frame_currenttimer)

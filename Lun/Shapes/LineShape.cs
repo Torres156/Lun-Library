@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SFML.System;
 
 namespace Lun.Shapes
 {
@@ -31,7 +32,7 @@ namespace Lun.Shapes
         float _thickness = 1f;
         Vector2 direction;
 
-        public override Vector2 GetPoint(uint index)
+        public override Vector2f GetPoint(uint index)
         {
             var unitDirection = direction / Length;
             Vector2 unitPer = new Vector2(-unitDirection.x, unitDirection.x);

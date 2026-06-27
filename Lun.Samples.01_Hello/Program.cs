@@ -18,6 +18,7 @@ namespace Lun.Samples._01_Hello
             Game.WindowSize = new Vector2(1024, 600);     // Start Size for Window
             Game.WindowCanResize = true;                  // Window can resized
             Game.BackgroundColor = Color.Black;           // Clear Background Color
+            Game.FixedPhysicTime = 0;
 
             // Opening Scene
             Game.SetScene<StartScene>();
@@ -29,14 +30,26 @@ namespace Lun.Samples._01_Hello
 
     class StartScene : SceneBase
     {
+        private Batcher2D batch;
+        private string[] word;
         public override void LoadContent()
         {
+            batch = new Batcher2D();
+            
         }
 
         public override void Draw()
         {
-            var text = "[color=red]Hello[/color] Lun!";
-            DrawBBColor(text, 22, new Vector2((Game.WindowSize.x - GetTextWidth(text, 22)) / 2, Game.WindowSize.y / 2 - 7));
+            batch.Begin();
+
+            var text = "Causa [color=#FFC602]0[/color]([color=#477BE5]+0[/color]) de Dano Mágico nos alvos, e acrescenta [color=red]Gelidez[/color] nos alvos. /n /n [color=red]Gelidez:[/color] Causa [color=#FFC602]0[/color]([color=#477BE5]+0[/color]) de Dano Mágico em alvos afetados por [color=red]Gelidez[/color] próximos.";
+            batch.AddBBCode(text, 12, Game.WindowSize / 2, 400, TextAligns.Left, 20);
+            batch.End();
+
+            DrawText("FPS: " + Game.FPS, 12, new Vector2(10, 10), Color.White, true);
+            // DrawText("TICK: " + Game.Clock.ElapsedTime.AsMilliseconds(), 12, new Vector2(10, 24), Color.White, true);
+            //
+            // DrawText("Delta: " + Game.DeltaTime, 12, new Vector2(10, 38), Color.White, true);
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Lun.Samples._03_Textures
             Game.WindowSize = new Vector2(1024, 600);     // Start Size for Window
             Game.WindowCanResize = true;                  // Window can resized
             Game.BackgroundColor = Color.Black;           // Clear Background Color
+            Game.AntiAliasing = 4;
+            Game.FixedPhysicTime = 0;
 
             // Opening Scene
             Game.SetScene<StartScene>();
@@ -30,11 +32,13 @@ namespace Lun.Samples._03_Textures
     class StartScene : SceneBase
     {
         Texture Background;
+        Batcher2D batcher;
 
         public override void LoadContent()
         {
             // Active smooth to resize
             Background = new Texture("background.jpg", true) { Smooth = true };
+            batcher = new Batcher2D();
         }
 
         public override void UnloadContent()
@@ -45,7 +49,15 @@ namespace Lun.Samples._03_Textures
 
         public override void Draw()
         {
-            DrawTexture(Background, new Rectangle(Vector2.Zero, Game.WindowSize));
+            //DrawTexture(Background, new Rectangle(Vector2.Zero, Game.WindowSize));
+
+            batcher.Begin();
+            batcher.DrawTexture(Background, new Rectangle(Vector2.Zero, Game.WindowSize), Color.White);
+            batcher.DrawString("Lun Library", 12, new Vector2(20, 20), Color.White);
+            batcher.DrawString("FPS: " + Game.FPS, 12, new Vector2(20, 60), Color.White);            
+            batcher.End();
+
+            DrawText("Batch Count: " + batcher.Count, 12, new Vector2(20, 40), Color.White);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Lun.SFML.Graphics;
+﻿using SFML.Graphics;
 
 namespace Lun
 {

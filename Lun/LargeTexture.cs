@@ -125,7 +125,7 @@ namespace Lun
         /// Construtor
         /// </summary>
         /// <param name="Pixels"></param>
-        public LargeTexture(Color[,] Pixels)
+        public LargeTexture(SFMLColor[,] Pixels)
         {
             Image img = new Image(Pixels);
             Create(img);
@@ -183,6 +183,8 @@ namespace Lun
             if (_texturelist.Length > 0)
                 foreach (var i in _texturelist)
                     i.Dispose();
+
+            GC.SuppressFinalize(this);
         }
 
         #endregion

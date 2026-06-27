@@ -1,10 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "T5hfZF6eg3/of7zw9dzI/2l3eILCx/bBVR1eyjZvHvvwl3Msa+2LYkEotqffoyUncWJvHGar4DFmHBXT9VSO9Q==",
+  "dgSpecHash": "dXzltI9eGZA=",
   "success": true,
-  "projectFilePath": "E:\\Curso\\Lun\\Lun\\Lun.csproj",
+  "projectFilePath": "F:\\Curso\\Lun\\Lun\\Lun.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\vforc\\.nuget\\packages\\csfml.redist\\2.5.1\\csfml.redist.2.5.1.nupkg.sha512"
+    "C:\\Users\\vforc\\.nuget\\packages\\csfml\\2.6.1\\csfml.2.6.1.nupkg.sha512",
+    "C:\\Users\\vforc\\.nuget\\packages\\sfml.audio\\2.6.0\\sfml.audio.2.6.0.nupkg.sha512",
+    "C:\\Users\\vforc\\.nuget\\packages\\sfml.graphics\\2.6.0\\sfml.graphics.2.6.0.nupkg.sha512",
+    "C:\\Users\\vforc\\.nuget\\packages\\sfml.net\\2.6.0\\sfml.net.2.6.0.nupkg.sha512",
+    "C:\\Users\\vforc\\.nuget\\packages\\sfml.system\\2.6.0\\sfml.system.2.6.0.nupkg.sha512",
+    "C:\\Users\\vforc\\.nuget\\packages\\sfml.window\\2.6.0\\sfml.window.2.6.0.nupkg.sha512"
   ],
   "logs": []
 }
