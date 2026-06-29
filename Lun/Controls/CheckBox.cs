@@ -26,7 +26,7 @@ namespace Lun.Controls
 
         public float Radius = 0f;
 
-        public uint PointCount = 8;
+        public int PointCount = 8;
 
         public event HandleCommon OnCheckChanged;               
 
@@ -42,21 +42,21 @@ namespace Lun.Controls
         /// <summary>
         /// Desenha a caixa
         /// </summary>
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             var gp = GlobalPosition();
 
             if (Radius > 0)
-                DrawRoundedRectangle(gp, Size, FillColor, Radius, PointCount, -1, OutlineColor);
+                batcher.DrawRoundedRectangle(gp, Size, FillColor, Radius, PointCount, -1, OutlineColor);
             else
-                DrawRectangle(gp, Size, FillColor, -1, OutlineColor);
+                batcher.DrawRectangle(gp, Size, FillColor, -1, OutlineColor);
 
             if (Checked)
                 if (Radius > 0)
-                    DrawRoundedRectangle(gp + 2, Size - 4, OutlineColor, Radius, PointCount);
+                    batcher.DrawRoundedRectangle(gp + 2, Size - 4, OutlineColor, Radius, PointCount);
                 else
-                    DrawRectangle(gp + 2, Size - 4, OutlineColor);
-            base.Draw();
+                    batcher.DrawRectangle(gp + 2, Size - 4, OutlineColor);
+            base.Draw(batcher);
         }
 
         public override bool MouseReleased(MouseButtonEventArgs e)

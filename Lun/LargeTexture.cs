@@ -101,7 +101,7 @@ namespace Lun
         /// <param name="Height"></param>
         public LargeTexture(uint Width, uint Height)
         {
-            Image img = new Image(Width, Height);
+            Image img = new Image(new Vector2(Width, Height));
             Create(img);
             img.Dispose();
             img = null;
@@ -115,7 +115,7 @@ namespace Lun
         /// <param name="Pixels"></param>
         public LargeTexture(uint Width, uint Height, byte[] Pixels)
         {
-            Image img = new Image(Width, Height, Pixels);
+            Image img = new Image(new Vector2(Width, Height), Pixels);
             Create(img);
             img.Dispose();
             img = null;
@@ -142,7 +142,7 @@ namespace Lun
             {
                 for (uint x = 0; x < CurrentImage.Size.X; x += maxsize)
                 {
-                    TextureSFML newtexture = new TextureSFML(CurrentImage, new IntRect((int)x, (int)y, (int)Math.Min(maxsize, CurrentImage.Size.X - x), (int)Math.Min(maxsize, CurrentImage.Size.Y - y)));
+                    TextureSFML newtexture = new TextureSFML(CurrentImage, new IntRect(new Vector2(x,y), new Vector2(Math.Min(maxsize, CurrentImage.Size.X - x), Math.Min(maxsize, CurrentImage.Size.Y - y))));
                     newtexture.Repeated = false;
                     newtexture.Smooth = _issmoothed;
                     newtextlist.Add(newtexture);
@@ -171,11 +171,11 @@ namespace Lun
                     for (int y = 0; y < _texturelist[i].Size.Y; y++)
                         Array.Copy(Pixels, (_positionlist[i].X * 4) + (((y + _positionlist[i].Y) * _totalsize.X * 4)), subpixels, _texturelist[i].Size.X * y * 4, _texturelist[i].Size.X * 4);
 
-                    _texturelist[i].Update(subpixels, _texturelist[i].Size.X, _texturelist[i].Size.Y, 0, 0);
+                    _texturelist[i].Update(subpixels, new Vector2(_texturelist[i].Size.X, _texturelist[i].Size.Y), Vector2.Zero);
                 }
             }
             else if (_texturelist.Length == 1)
-                _texturelist[0].Update(Pixels, _totalsize.X, _totalsize.Y, 0, 0);
+                _texturelist[0].Update(Pixels, new Vector2(_totalsize.X, _totalsize.Y), Vector2.Zero);
         }
 
         public void Destroy()

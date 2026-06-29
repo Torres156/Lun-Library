@@ -51,6 +51,32 @@ namespace Lun
         public bool Equals(Point other)
             => other.x == (int)x && other.y == (int)y;
 
+        public float Length()
+            => (float)Math.Sqrt(x * x + y * y);
+
+        public void Normalize()
+        {
+            float length = Length();
+            if (length != 0)
+            {
+                x /= length;
+                y /= length;
+            }
+        }
+
+        public static Vector2 Normalize(Vector2 value)
+        {
+            float length = value.Length();
+            if (length != 0)
+            {
+                return new Vector2(value.x / length, value.y / length);
+            }
+            return Vector2.Zero;
+        }
+
+        public float LengthSquared()
+            => x * x + y * y;
+
         /// <summary>
         /// Distância entre 2 pontos
         /// </summary>

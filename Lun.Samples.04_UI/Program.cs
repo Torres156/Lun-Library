@@ -18,6 +18,8 @@ namespace Lun.Samples._04_UI
             Game.WindowSize = new Vector2(1024, 600);     // Start Size for Window
             Game.WindowCanResize = true;                  // Window can resized
             Game.BackgroundColor = Color.Black;           // Clear Background Color
+            Game.FixedPhysicTime = 0;
+            Game.AntiAliasing = 0;
 
             // Opening Scene
             Game.SetScene<StartScene>();
@@ -46,7 +48,7 @@ namespace Lun.Samples._04_UI
             {
                 Size = new Vector2(150,220),
                 Title = "Fixed Size",
-                Position = new Vector2(10),
+                Position = new Vector2(250, 10),
             };
 
             buttonSample = new Button(formSample)
@@ -108,19 +110,21 @@ namespace Lun.Samples._04_UI
                 Position = new Vector2(200, 20),
                 MaxLength = 10,
             };
+            txtSample.AddSuggestion("Numbers", "Numeric", "Only numbers");
+            txtSample.AddSuggestion("Number", "Numeric", "Only numbers");            
         }
 
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             var text = "Causa [color=#FFC602]75[/color]([color=#477BE5]+133[/color])([color=#CA29E1]+20[/color]) de Dano Mágico nos alvos, e nos [color=red]Gelidez[/color] nos alvos. /n /n Causa [color=#FFC602]50[/color]([color=#477BE5]+98[/color])([color=#CA29E1]+14[/color]) de Dano Mágico em outros alvos próximos afetados por [color=red]Gelidez[/color].";
-            var words = GetWordWrapBBColor(text, 190,11);
+            
+            batcher.Begin();
+            //batcher.AddBBCode(text, 12, new Vector2(10, 14), 190);
+            batcher.DrawString("FPS:" + Game.FPS, 12, new Vector2(10, 300), Color.White);
+                        
+            batcher.End();
 
-            for (int i = 0; i < words.Length; i++)
-            {
-                DrawBBColor(words[i], 11, new Vector2(10, 14 * i));
-            }
-
-            base.Draw();
+            base.Draw(batcher);
         }
     }
 }

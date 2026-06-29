@@ -69,7 +69,7 @@
         /// <summary>
         /// Espessura da borda
         /// </summary>
-        public float OutlineThickness = 0;
+        public int OutlineThickness = 0;
 
         /// <summary>
         /// Cor da borda
@@ -177,25 +177,24 @@
         /// </summary>
         /// <param name="target"></param>
         /// <param name="states"></param>
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
-            Draw_Normal();
+            Draw_Normal(batcher);
 
-            base.Draw();
+            base.Draw(batcher);
         }
-
 
         /// <summary>
         /// Desenha normalmente
         /// </summary>
         /// <param name="target"></param>
-        void Draw_Normal()
+        void Draw_Normal(Batcher2D batcher)
         {
             var gp = GlobalPosition();
             float X = 0;
 
             // Fundo
-            DrawRoundedRectangle(gp, Size, FillColor, Radius, 8, OutlineThickness, OutlineColor);
+            batcher.DrawRoundedRectangle(gp, Size, FillColor, Radius, 8, OutlineThickness, OutlineColor);
 
 
             // Pré texto
@@ -216,7 +215,7 @@
                         break;
                 }
 
-                DrawText(pre_Text, 11, gp + new Vector2(X, (Size.y / 2) - 7), TextColor - new Color(60, 60, 60, 0));
+                batcher.DrawString(pre_Text, 11, gp + new Vector2(X, (Size.y / 2) - 7), TextColor - new Color(60, 60, 60, 0));
                 return;
             }
 
@@ -268,7 +267,7 @@
                 if (Character_CurrentIndex > Text.Length) Character_CurrentIndex = Text.Length;
 
                 int diff =  Math.Max(0, Character_CurrentIndex - XoffSet);
-                DrawText("|", 11, gp + new Vector2(X - GetTextWidth("|") / 2 + GetTextWidth(display.Substring(0, Math.Min(display.Length, diff)), ignoreBB: true),
+                batcher.DrawString("|", 11, gp + new Vector2(X - GetTextWidth("|") / 2 + GetTextWidth(display.Substring(0, Math.Min(display.Length, diff)), ignoreBB: true),
                      (Size.y / 2) - 7
                     ), TextColor);
                 //DrawText("|", 11, gp + new Vector2(X + (useDiff ? 0 : (Character_CurrentIndex == 0 ?
@@ -276,11 +275,11 @@
                 //    GetTextWidth(display.Substring(0, Math.Max(0, Character_CurrentIndex - diff)), ignoreBB: true))),
                 //    (Size.y / 2) - 7), TextColor);
             }
-            DrawText(display, 11, gp + new Vector2(X, (Size.y / 2) - 7), TextColor);
+            batcher.DrawString(display, 11, gp + new Vector2(X, (Size.y / 2) - 7), TextColor);
             if (HasFocus() && Text.Length > 0 && Suggestion.Count > 0)
             {
                 if (Bond != null && Bond.priority != this) Bond.priority = this;
-                Draw_Suggestion();
+                Draw_Suggestion(batcher);
             }
         }
 
@@ -290,12 +289,15 @@
         /// <summary>
         /// Desenha as sugestões
         /// </summary>
-        /// <param name="target"></param>
-        void Draw_Suggestion()
+        /// <param name="batcher"></param>
+        void Draw_Suggestion(Batcher2D batcher)
         {
             var gp = GlobalPosition();
 
-            var findKeys = Suggestion.ToList().FindAll(i => i.Key.Contains(Text) || (Text.Length >= i.Key.Length && i.Key.Contains(Text.Substring(0, i.Key.Length - 1))));
+            var findKeys = Suggestion.ToList().FindAll(i => 
+                i.Key.Contains(Text, StringComparison.OrdinalIgnoreCase) ||
+                (Text.Length >= i.Key.Length && i.Key.Contains(Text.Substring(0, i.Key.Length - 1), StringComparison.OrdinalIgnoreCase))
+            );
             int count = findKeys.Count;
             if (count > 0)
             {
@@ -307,19 +309,19 @@
                     h += 14 + GetWordWrap(i.Value[1], w - 4).Length * 14 + 4;
                 }
 
-                var pos = gp + new Vector2(2, Size.y + 1);
-                DrawRectangle(pos, new Vector2(w, h), TextColor, 1, OutlineColor);
+                var pos = gp + new Vector2(2, Size.y + 3);
+                batcher.DrawRectangle(pos, new Vector2(w, h), TextColor, 1, OutlineColor);
 
                 int off = 0;
                 for (int i = 0; i < count; i++)
                 {
-                    DrawText(findKeys[i].Key, 11, pos + new Vector2(2, 2 + off), Color.White);
+                    batcher.DrawString(findKeys[i].Key, 11, pos + new Vector2(2, 2 + off), Color.White);
                     if (findKeys[i].Value[0].Length > 0)
-                        DrawText($"({findKeys[i].Value[0]})", 11, pos + new Vector2(2 + GetTextWidth(findKeys[i].Key) + 4, 2 + off), FillColor);
+                        batcher.DrawString($"({findKeys[i].Value[0]})", 11, pos + new Vector2(2 + GetTextWidth(findKeys[i].Key) + 4, 2 + off), new Color(168, 99, 62));
 
                     var words = GetWordWrap(findKeys[i].Value[1], w - 4);
                     for (var x = 0; x < words.Length; x++)
-                        DrawText(words[x], 11, pos + new Vector2(2, 2 + off + 14 + 14 * x), new Color(FillColor.R, FillColor.G, FillColor.B, (byte)150));
+                        batcher.DrawString(words[x], 11, pos + new Vector2(2, 2 + off + 14 + 14 * x), new Color(FillColor.R, FillColor.G, FillColor.B, (byte)150));
 
                     off += 14 + 14 * words.Length + 4;
                 }

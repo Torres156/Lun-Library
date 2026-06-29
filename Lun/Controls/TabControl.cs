@@ -87,10 +87,7 @@ namespace Lun.Controls
         public TabPanel this[string name]
             => Items[name];
 
-        /// <summary>
-        /// Desenha os painel
-        /// </summary>
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             var count = Items.Count;
             if (count > 0)
@@ -101,11 +98,11 @@ namespace Lun.Controls
                 for (int i = 0; i < count; i++)
                 {
                     var pos = gp + new Vector2(xOff, SelectIndex == i ? 0 : 5);
-                    DrawRoundedRectangle(pos,
+                    batcher.DrawRoundedRectangleAllCorner(pos,
                         new Vector2(10 + GetTextWidth(Items.Keys.ElementAt(i), 12), SelectIndex == i ? 25 : 20),
-                        SelectIndex == i ? FillColor_Bar : (_hoverIndex == i ? FillColor_Bar + new Color(100, 100, 100) : Color.White), 4f, 0, 8);
+                        SelectIndex == i ? FillColor_Bar : (_hoverIndex == i ? FillColor_Bar + new Color(100, 100, 100) : Color.White), 4f,4f,0, 0, 8);
 
-                    DrawText(Items.Keys.ElementAt(i), 12,
+                    batcher.DrawString(Items.Keys.ElementAt(i), 12,
                         pos + new Vector2(5, (SelectIndex == i ? 25 : 20) / 2 - 7),
                         SelectIndex == i ? Color.White : FillColor_Bar);
 
@@ -113,7 +110,7 @@ namespace Lun.Controls
                 }
             }
 
-            base.Draw();
+            base.Draw(batcher);
         }
 
         public override bool MouseMoved(Vector2 e)

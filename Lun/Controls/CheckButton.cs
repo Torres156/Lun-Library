@@ -44,7 +44,7 @@ namespace Lun.Controls
         public CheckButton(Bond bond) : base(bond)
         { }
 
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             var gp = GlobalPosition();
 
@@ -52,21 +52,21 @@ namespace Lun.Controls
                 _hover = false;
 
             if (!_hover)
-                DrawRoundedRectangle(gp, Size, FillColor, Radius, CornerPoints,
+                batcher.DrawRoundedRectangle(gp, Size, FillColor, Radius, (int)CornerPoints,
                     Checked ? OutlineThickness_Checked : OutlineThickness,
                     Checked ? OutlineColor_Checked : OutlineColor);
             else
-                DrawRoundedRectangle(gp, Size, FillColor_Hover, Radius, CornerPoints,
+                batcher.DrawRoundedRectangle(gp, Size, FillColor_Hover, Radius, (int)CornerPoints,
                     Checked ? OutlineThickness_Checked : OutlineThickness,
                     Checked ? OutlineColor_Checked : OutlineColor);
 
             if (Texture != null)
-                DrawTexture(Texture, new Rectangle(gp + new Vector2(2), new Vector2(Size.x - 4, Size.y - 4)), Color.White);
+                batcher.DrawTexture(Texture, new Rectangle(gp + new Vector2(2), new Vector2(Size.x - 4, Size.y - 4)), Color.White);
 
             var x = (Size.x - GetTextWidth(Text, (uint)TextSize)) / 2;
             var y = (Size.y - GetTextHeight(Text, (uint)TextSize)) / 2;
-            DrawText(Text, TextSize, gp + new Vector2(x, y - 1), TextColor);
-            base.Draw();
+            batcher.DrawString(Text, TextSize, gp + new Vector2(x, y - 1), TextColor);
+            base.Draw(batcher);
         }
 
         public override bool MouseMoved(Vector2 e)

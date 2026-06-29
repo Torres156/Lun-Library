@@ -1,7 +1,10 @@
 ﻿using Lun.Controls;
 using SFML.Graphics;
+using SFML.System;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Text;
 using sfTexture = SFML.Graphics.Texture;
 
@@ -14,6 +17,7 @@ class Batcher2DValue
 
     public sfTexture Texture { get; set; } = null;
     public BlendMode BlendMode { get; set; } = BlendMode.Alpha;
+    public PrimitiveType PrimitiveType { get; set; } = PrimitiveType.Triangles;
 
     public Batcher2DValue(int capacity = 40960)
     {
@@ -21,6 +25,7 @@ class Batcher2DValue
         _count = 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add(Vertex vertex)
     {
         if (_count >= _vertices.Length)
@@ -30,6 +35,7 @@ class Batcher2DValue
         _vertices[_count++] = vertex;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddQuad(Vertex topLeft, Vertex topRight, Vertex bottomRight, Vertex bottomLeft)
     {
         Add(topLeft);
@@ -75,25 +81,27 @@ public class Batcher2D
         return value;
     }
 
-    Batcher2DValue GetOrCreate(sfTexture texture)
+    Batcher2DValue GetOrCreate(sfTexture texture, PrimitiveType primitiveType = PrimitiveType.Triangles)
     {
         if (_count == 0 || _count == values.Count)
         {
             var value = Create();
             value.Texture = texture;
+            value.PrimitiveType = primitiveType;
             return value;
         }
 
         var lastValue = values[_count - 1];
-        if (lastValue.Texture != texture)
+        if (lastValue.Texture != texture || lastValue.PrimitiveType != primitiveType)
         {
             var value = Create();
             value.Texture = texture;
+            value.PrimitiveType = primitiveType;
             return value;
 
         }
-        
-        return lastValue;        
+
+        return lastValue;
     }
 
     public void Clear()
@@ -121,15 +129,34 @@ public class Batcher2D
     {
         if (_count == 0) return;
 
+        sfTexture currentTexture = null;
+        BlendMode currentBlend = default;
+
         for (int i = 0; i < _count; i++)
         {
             var value = values[i];
-            if (value.Count > 0)
+
+            if (value.Count == 0)
+                continue;
+
+            if (!ReferenceEquals(currentTexture, value.Texture))
             {
-                _states.Texture = value.Texture;
-                _states.BlendMode = value.BlendMode;
-                currentTarget.Draw(value.Vertices, 0, value.Count, PrimitiveType.Triangles, _states);                
+                currentTexture = value.Texture;
+                _states.Texture = currentTexture;
             }
+
+            if (!currentBlend.Equals(value.BlendMode))
+            {
+                currentBlend = value.BlendMode;
+                _states.BlendMode = currentBlend;
+            }
+
+            currentTarget.Draw(
+                value.Vertices,
+                0,
+                value.Count,
+                value.PrimitiveType,
+                _states);
         }
     }
 
@@ -163,7 +190,7 @@ public class Batcher2D
         var texture = getFontTexture(characterSize);
         var glyphs = getFontGlyphs(characterSize);
 
-        if (rounded)        
+        if (rounded)
             position = position.ToInt();
 
         if (shadow)
@@ -188,7 +215,7 @@ public class Batcher2D
                 continue;
             }
 
-            var glyph = glyphs[c]; 
+            var glyph = glyphs[c];
             var bounds = glyph.Bounds;
             var texRect = glyph.TextureRect;
 
@@ -220,7 +247,7 @@ public class Batcher2D
         for (int i = 0; i < word.Length; i++)
         {
             var x = align switch
-            {                
+            {
                 TextAligns.Left => position.x,
                 TextAligns.Center => position.x - GetTextWidth(word[i], (uint)characterSize) / 2,
                 TextAligns.Right => position.x - GetTextWidth(word[i], (uint)characterSize),
@@ -335,38 +362,56 @@ public class Batcher2D
 
     void DrawNativeTexture(sfTexture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, BlendMode blendMode, int rotation = 0)
     {
-        dest.position -= origin;
         var batcher = GetOrCreate(texture);
+        float rad = rotation * (float)Math.PI / 180f;
+
+        // --- CORREÇÃO DA ESCALA NA ORIGEM ---
+        // Se a 'origin' passada veio do tamanho original da textura, 
+        // precisamos escalá-la para bater com o tamanho de 'dest'.
+        float scaleX = dest.width / src.width;
+        float scaleY = dest.height / src.height;
+
+        var scaledOrigin = new Vector2(origin.x * scaleX, origin.y * scaleY);
+        // -------------------------------------
+
+        // 1. Agora usamos o scaledOrigin para os cantos locais
+        var topLeft = new Vector2(0 - scaledOrigin.x, 0 - scaledOrigin.y);
+        var topRight = new Vector2(dest.width - scaledOrigin.x, 0 - scaledOrigin.y);
+        var bottomRight = new Vector2(dest.width - scaledOrigin.x, dest.height - scaledOrigin.y);
+        var bottomLeft = new Vector2(0 - scaledOrigin.x, dest.height - scaledOrigin.y);
+
+        // 2. Rotação ao redor do pivô local correto (0, 0)
         if (rotation != 0)
         {
-            var center = dest.position + new Vector2(dest.width / 2, dest.height / 2);
-            var rad = rotation * (float)Math.PI / 180f;
-            // Calculate the four corners of the rectangle
-            var topLeft = new Vector2(dest.x, dest.y);
-            var topRight = new Vector2(dest.x + dest.width, dest.y);
-            var bottomRight = new Vector2(dest.x + dest.width, dest.y + dest.height);
-            var bottomLeft = new Vector2(dest.x, dest.y + dest.height);
-            // Rotate each corner around the center
-            topLeft = RotatePoint(topLeft, center, rad);
-            topRight = RotatePoint(topRight, center, rad);
-            bottomRight = RotatePoint(bottomRight, center, rad);
-            bottomLeft = RotatePoint(bottomLeft, center, rad);
-            
-            batcher.AddQuad(
-                new Vertex(topLeft, color, new Vector2(src.x, src.y)),
-                new Vertex(topRight, color, new Vector2(src.x + src.width, src.y)),
-                new Vertex(bottomRight, color, new Vector2(src.x + src.width, src.y + src.height)),
-                new Vertex(bottomLeft, color, new Vector2(src.x, src.y + src.height))
-            );
-            return;
+            Vector2 zero = Vector2.Zero;
+            topLeft = RotatePoint(topLeft, zero, rad);
+            topRight = RotatePoint(topRight, zero, rad);
+            bottomRight = RotatePoint(bottomRight, zero, rad);
+            bottomLeft = RotatePoint(bottomLeft, zero, rad);
         }
-        
+
+        // 3. Transladar para a posição final do mundo
+        var worldPos = new Vector2(dest.x, dest.y);
+        topLeft += worldPos;
+        topRight += worldPos;
+        bottomRight += worldPos;
+        bottomLeft += worldPos;
+
+        // 4. Enviar para o lote
+        batcher.BlendMode = blendMode;
         batcher.AddQuad(
-            new Vertex(new Vector2(dest.x, dest.y), color, new Vector2(src.x, src.y)),
-            new Vertex(new Vector2(dest.x + dest.width, dest.y), color, new Vector2(src.x + src.width, src.y)),
-            new Vertex(new Vector2(dest.x + dest.width, dest.y + dest.height), color, new Vector2(src.x + src.width, src.y + src.height)),
-            new Vertex(new Vector2(dest.x, dest.y + dest.height), color, new Vector2(src.x, src.y + src.height))
+            new Vertex(topLeft, color, new Vector2(src.x, src.y)),
+            new Vertex(topRight, color, new Vector2(src.x + src.width, src.y)),
+            new Vertex(bottomRight, color, new Vector2(src.x + src.width, src.y + src.height)),
+            new Vertex(bottomLeft, color, new Vector2(src.x, src.y + src.height))
         );
+    }
+
+    public void DrawRenderTexture(RenderTexture render, Vector2 position, Color color)
+    {
+        var texture = render.Texture;
+        var size = new Vector2(texture.Size.X, texture.Size.Y);
+        DrawNativeTexture(texture, new Rectangle(position, size), new Rectangle(0, 0, size.x, size.y), Vector2.Zero, color, BlendMode.Alpha);
     }
 
     void DrawLargeTexture(LargeTexture texture, Rectangle dest, Color color)
@@ -374,21 +419,23 @@ public class Batcher2D
         int maxWidth = (int)sfTexture.MaximumSize;
         int count = texture.TextureList.Length;
 
-        var scale = new Vector2(dest.width / texture.Size.X, dest.height / texture.Size.Y);        
-        for (int i = 0; i < count; i++) {
+        var scale = new Vector2(dest.width / texture.Size.X, dest.height / texture.Size.Y);
+        for (int i = 0; i < count; i++)
+        {
             var tex = texture.TextureList[i];
             // Calculate the position and size of the sub-texture in the destination rectangle
             var pos = dest.position + (Vector2)texture.PositionList[i] * scale;
             var size = (Vector2)tex.Size * scale;
             // Chunk size
             var src = new Rectangle(0,0, tex.Size.X,tex.Size.Y);
-            DrawNativeTexture(tex, new Rectangle(pos,size), src, Vector2.Zero, color, BlendMode.Alpha);
-        }    
+            DrawNativeTexture(tex, new Rectangle(pos, size), src, Vector2.Zero, color, BlendMode.Alpha);
+        }
     }
 
     public void DrawTexture(Texture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, BlendMode blendMode, int rotation = 0)
     {
         if (texture == null) throw new ArgumentNullException(nameof(texture));
+        texture.Load();
 
         if (texture.type == TextureTypes.Normal)
         {
@@ -402,21 +449,236 @@ public class Batcher2D
 
     public void DrawTexture(Texture texture, Rectangle dest, Rectangle src, Vector2 origin, Color color, int rotation = 0)
     {
-        if (texture == null) throw new ArgumentNullException(nameof(texture));
-        
-        if (texture.type == TextureTypes.Normal)
-        {
-            DrawNativeTexture(texture.GetTexture(), dest, src, origin, color, BlendMode.Alpha, rotation);
-        }
-        else if (texture.type == TextureTypes.Large)
-        {
-            DrawLargeTexture(texture.GetLargeTexture(), dest, color);
-        }
+        DrawTexture(texture, dest, src, origin, color, BlendMode.Alpha, rotation);
+    }
+
+    public void DrawTexture(Texture texture, Rectangle dest, Rectangle src, Color color)
+    {
+        DrawTexture(texture, dest, src, Vector2.Zero, color, BlendMode.Alpha);
     }
 
     public void DrawTexture(Texture texture, Rectangle dest, Color color)
     {
         DrawTexture(texture, dest, new Rectangle(0, 0, texture.size.x, texture.size.y), Vector2.Zero, color);
+    }
+
+    public void DrawTexture(Texture texture, Rectangle dest)
+    {
+        DrawTexture(texture, dest, new Rectangle(0, 0, texture.size.x, texture.size.y), Vector2.Zero, Color.White);
+    }
+
+    public void DrawTexture(Texture texture, Vector2 position, Color color)
+    {
+        DrawTexture(texture, new Rectangle(position, texture.size), new Rectangle(0, 0, texture.size.x, texture.size.y), Vector2.Zero, color);
+    }
+
+    private List<Vector2> BuildRoundedRectPoints(
+    Vector2 position,
+    Vector2 size,
+    float tl,
+    float tr,
+    float bl,
+    float br,
+    int segments)
+    {
+        List<Vector2> pts = new();
+
+        float delta = (MathF.PI * 0.5f) / (segments - 1);
+
+        void AddArc(Vector2 c, float startAngle, float radius)
+        {
+            if (radius <= 0f)
+            {
+                pts.Add(c);
+                return;
+            }
+
+            for (int i = 0; i < segments; i++)
+            {
+                float a = startAngle + delta * i;
+
+                pts.Add(new Vector2(
+                    c.x + MathF.Cos(a) * radius,
+                    c.y + MathF.Sin(a) * radius));
+            }
+        }
+
+        // TR
+        AddArc(
+            new(position.x + size.x - tr, position.y + tr),
+            -MathF.PI / 2,
+            tr);
+
+        // BR
+        AddArc(
+            new(position.x + size.x - br, position.y + size.y - br),
+            0,
+            br);
+
+        // BL
+        AddArc(
+            new(position.x + bl, position.y + size.y - bl),
+            MathF.PI / 2,
+            bl);
+
+        // TL
+        AddArc(
+            new(position.x + tl, position.y + tl),
+            MathF.PI,
+            tl);
+
+        return pts;
+    }
+
+    public void DrawRoundedRectangleOutlineAllCorner(Vector2 position, Vector2 size, Color outlineColor, float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, int cornerPoint = 8, int outlineThickness = 1)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+
+        float deltaAngle = 90f / (cornerPoint - 1);
+
+        List<Vector2> inner = new();
+        List<Vector2> outer = new();
+
+        void AddCorner(Vector2 center, float startAngle, float radius)
+        {
+            if (radius <= 0)
+            {
+                Vector2 p;
+                Vector2 dir;
+
+                switch ((int)startAngle)
+                {
+                    case 0: // TR
+                        p = new(position.x + size.x, position.y);
+                        dir = Vector2.Normalize(new Vector2(1, -1));
+                        break;
+
+                    case 90: // TL
+                        p = new(position.x, position.y);
+                        dir = Vector2.Normalize(new Vector2(-1, -1));
+                        break;
+
+                    case 180: // BL
+                        p = new(position.x, position.y + size.y);
+                        dir = Vector2.Normalize(new Vector2(-1, 1));
+                        break;
+
+                    default: // BR
+                        p = new(position.x + size.x, position.y + size.y);
+                        dir = Vector2.Normalize(new Vector2(1, 1));
+                        break;
+                }
+
+                inner.Add(p);
+                outer.Add(p + dir * outlineThickness);
+
+                return;
+            }
+
+            for (int i = 0; i < cornerPoint; i++)
+            {
+                float angle = (startAngle + deltaAngle * i) * MathF.PI / 180f;
+
+                Vector2 dir = new(
+                MathF.Cos(angle),
+                -MathF.Sin(angle));
+
+                inner.Add(center + dir * radius);
+                outer.Add(center + dir * (radius + outlineThickness));
+            }
+        }
+
+        AddCorner(
+            new(position.x + size.x - topRightRadius, position.y + topRightRadius),
+            0,
+            topRightRadius);
+
+        AddCorner(
+            new(position.x + topLeftRadius, position.y + topLeftRadius),
+            90,
+            topLeftRadius);
+
+        AddCorner(
+            new(position.x + bottomLeftRadius, position.y + size.y - bottomLeftRadius),
+            180,
+            bottomLeftRadius);
+
+        AddCorner(
+            new(position.x + size.x - bottomRightRadius, position.y + size.y - bottomRightRadius),
+            270,
+            bottomRightRadius);
+
+        for (int i = 0; i < inner.Count; i++)
+        {
+            int next = (i + 1) % inner.Count;
+
+            batcher.AddQuad(
+                new Vertex(outer[i], outlineColor),
+                new Vertex(outer[next], outlineColor),
+                new Vertex(inner[next], outlineColor),
+                new Vertex(inner[i], outlineColor)
+            );         
+        }
+    }
+
+    public void DrawRoundedRectangleOutline(Vector2 position, Vector2 size, Color outlineColor, float radius, int cornerPoint = 8, int outlineThickness = 0)
+    {
+        DrawRoundedRectangleOutlineAllCorner(position, size, outlineColor, radius, radius, radius, radius, cornerPoint, outlineThickness);
+    }
+
+    public void DrawRoundedRectangleAllCorner(Vector2 position, Vector2 size, Color fillColor, float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, int cornerPoint = 8, int outlineThickness = 0, Color outlineColor = default)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+
+        var points = BuildRoundedRectPoints(
+        position, size,
+        topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius,
+        cornerPoint);
+
+        if (points.Count < 3)
+            return;
+
+        for (int i = 1; i < points.Count - 1; i++)
+        {
+            batcher.Add(new Vertex(points[0], fillColor));
+            batcher.Add(new Vertex(points[i], fillColor));
+            batcher.Add(new Vertex(points[i + 1], fillColor));
+        }
+
+        if (outlineThickness > 0)        
+            DrawRoundedRectangleOutlineAllCorner(position, size, outlineColor, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, cornerPoint, outlineThickness);        
+    }
+
+    public void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius, int cornerPoint = 8, int outlineThickness = 0, Color outlineColor = default)
+    {
+        DrawRoundedRectangleAllCorner(position, size, fillColor, radius, radius, radius, radius, cornerPoint, outlineThickness, outlineColor);
+    }
+
+    public void DrawLine(Vector2 start, Vector2 end, Color color, float thickness = 1f)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+
+        Vector2 direction = end - start;
+
+        if (direction.LengthSquared() <= 0.000001f)
+            return;
+
+        direction.Normalize();
+
+        Vector2 normal = new(-direction.y, direction.x);
+        normal *= thickness * 0.5f;
+
+        Vector2 v0 = start + normal;
+        Vector2 v1 = start - normal;
+        Vector2 v2 = end + normal;
+        Vector2 v3 = end - normal;
+                
+        batcher.AddQuad(new Vertex(v0, color), new Vertex(v1, color), new Vertex(v2, color), new Vertex(v3, color));      
+    }
+    
+    public void DrawRectangle(Vector2 position, Vector2 size, Color fillColor, int outlineThickness = 0, Color outlineColor = default)
+    {
+        DrawRoundedRectangleAllCorner(position, size, fillColor, 0, 0, 0, 0, 0, outlineThickness, outlineColor);
     }
 
 }

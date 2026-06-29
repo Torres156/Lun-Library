@@ -8,7 +8,7 @@ namespace Lun.Controls
     {
         #region Properties
         protected string alert_message = "";
-        protected long alert_timer = 0;
+        protected long alert_timer = 0;        
         internal Form form_Priority;
 
         #endregion
@@ -19,7 +19,7 @@ namespace Lun.Controls
         /// </summary>
         public SceneBase() : base()
         {
-            Size = (Vector2)Game.WindowSize;
+            Size = (Vector2)Game.WindowSize;            
         }
 
         public abstract void LoadContent();
@@ -39,14 +39,15 @@ namespace Lun.Controls
         /// </summary>
         /// <param name="target"></param>
         /// <param name="states"></param>
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
+            batcher.Begin();
             if (controls.Count > 0)
             {
                 var count = controls.Count;
                 for (int i = 0; i < count; i++)
                     if (controls[i] != null && controls[i] != priority && controls[i].Visible)
-                        controls[i].Draw();
+                        controls[i].Draw(batcher);
             }
 
             if (forms.Count > 0)
@@ -54,18 +55,20 @@ namespace Lun.Controls
                 var count = forms.Count;
                 for (int i = 0; i < count; i++)
                     if (forms[i] != null && forms[i] != priority  && forms[i] != form_Priority && forms[i].Visible)
-                        forms[i].Draw();
+                        forms[i].Draw(batcher);
             }
 
             if (form_Priority != null)
             {
-                DrawRectangle(Vector2.Zero, Game.WindowSize, new Color(0, 0, 0, 150));
-                form_Priority.Draw();
+                batcher.DrawRectangle(Vector2.Zero, Game.WindowSize, new Color(0, 0, 0, 150));
+                form_Priority.Draw(batcher);
             }
-            priority?.Draw();
+            priority?.Draw(batcher);
 
             if (isAlert)
                 Draw_Alert();
+
+            batcher.End();
         }
 
         /// <summary>

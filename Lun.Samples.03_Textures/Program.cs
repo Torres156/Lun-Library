@@ -31,14 +31,12 @@ namespace Lun.Samples._03_Textures
 
     class StartScene : SceneBase
     {
-        Texture Background;
-        Batcher2D batcher;
+        Texture Background;        
 
         public override void LoadContent()
         {
             // Active smooth to resize
-            Background = new Texture("background.jpg", true) { Smooth = true };
-            batcher = new Batcher2D();
+            Background = new Texture("background.jpg", true) { Smooth = true };            
         }
 
         public override void UnloadContent()
@@ -47,7 +45,7 @@ namespace Lun.Samples._03_Textures
             base.UnloadContent();
         }
 
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             //DrawTexture(Background, new Rectangle(Vector2.Zero, Game.WindowSize));
 

@@ -9,13 +9,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using SFML.Graphics;
 using SFML.Window;
+using SFML.System;
 
 namespace Lun
 {
     public static class LunEngine
     {
         // Dispositivos
-        static readonly Sprite _sprite = new Sprite();
+        static readonly Sprite _sprite = null;
         static readonly LargeSprite _spritelarge = new LargeSprite();
         static readonly RectangleShape rec = new RectangleShape();
         static readonly CircleShape cir = new CircleShape();
@@ -23,10 +24,10 @@ namespace Lun
         static readonly LineShape lineshape = new LineShape();
         internal static readonly Dictionary<int, FontCache> fontCache = [];
 
-        public static RenderTarget currentTarget;
+        public static IRenderTarget currentTarget;
         internal static List<Texture> cacheTextures = new List<Texture>();
 
-        static Stack<RenderTarget> renders = [];
+        static Stack<IRenderTarget> renders = [];
         static Stack<Camera2D> cams = [];
 
         static Camera2D currentCamera;
@@ -34,7 +35,7 @@ namespace Lun
 
         // Vertices
         static Vertex[] lines = new Vertex[2];
-        static Vertex[] gradients = new Vertex[4];
+        static Vertex[] gradients = new Vertex[6];
 
 
         // Font
@@ -171,7 +172,7 @@ namespace Lun
             _sprite.Texture = render.Texture;
             _sprite.Position = position;
             _sprite.Scale = Vector2.One;
-            _sprite.TextureRect = new IntRect(0, 0, (int)render.Size.X, (int)render.Size.Y);
+            _sprite.TextureRect = new IntRect(Vector2.Zero, (Vector2i)render.Size);
             _sprite.Color = color;
             _sprite.Origin = Vector2.Zero;
             _sprite.Rotation = 0;
@@ -381,10 +382,16 @@ namespace Lun
         /// <param name="color"></param>
         public static void DrawGradient(Vector2[] pos, Color[] color)
         {
-            for (int i = 0; i < 4; i++)
-                gradients[i] = new Vertex(pos[i], color[i]);
-
-            currentTarget.Draw(gradients, PrimitiveType.Quads);
+            Vertex[] vertices =
+            [
+                new Vertex(pos[0], color[0]),
+                new Vertex(pos[1], color[1]),
+                new Vertex(pos[2], color[2]),
+                new Vertex(pos[2], color[2]),
+                new Vertex(pos[3], color[3]),
+                new Vertex(pos[0], color[0]),
+            ];
+            currentTarget.Draw(vertices, PrimitiveType.Triangles);
         }
 
         /// <summary>
@@ -1053,13 +1060,13 @@ namespace Lun
         {
             var f = new Font(filename);
             gameFont = f;
-            _text = new Text("", gameFont);
+            _text = new Text(gameFont);
             //_text.LetterSpacing = 0;
         }
 
-        public static RenderTexture CreateRender2D(int Width, int Height)
+        public static RenderTexture CreateRender2D(int Width, int Height, uint antiAliasing = 0)
         {
-            return new RenderTexture((uint)Width, (uint)Height, new ContextSettings(32, 8, Game.AntiAliasing));
+            return new RenderTexture(new Vector2(Width, Height), new ContextSettings(32, 8, antiAliasing));
         }
 
         public static void ClearColor(Color color)
@@ -1067,7 +1074,7 @@ namespace Lun
             currentTarget?.Clear(color);
         }
 
-        public static void BeginRender(RenderTarget target)
+        public static void BeginRender(IRenderTarget target)
         {
             renders.Push(LunEngine.currentTarget);
 

@@ -17,15 +17,15 @@ namespace Lun.Controls
 
         }
 
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             var tc = Bond as TabControl;
             var gp = GlobalPosition();
-            DrawRoundedRectangle(gp,
+            batcher.DrawRoundedRectangleAllCorner(gp,
                 Size,
-                tc.FillColor_Bar, 0, 4f, 8);
+                tc.FillColor_Bar, 0,0, 4f, 4f, 8);
 
-            base.Draw();
+            base.Draw(batcher);
         }
     }
 }

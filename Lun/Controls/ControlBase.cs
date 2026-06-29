@@ -160,9 +160,7 @@ namespace Lun.Controls
         /// <summary>
         /// Desenha o controle
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="states"></param>
-        public virtual void Draw()
+        public virtual void Draw(Batcher2D batcher)
         {
             OnDraw?.Invoke(this);
         }

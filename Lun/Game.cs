@@ -41,7 +41,7 @@ namespace Lun
         public static uint FixedPhysicTime = 60; // Tempo fixo para processamento físico
         public static Color BackgroundColor = Color.CornflowerBlue; // Cor de fundo
         public static SceneBase Scene { get; private set; } // Cena atual
-        public static uint AntiAliasing = 8;
+        public static uint AntiAliasing = 0;
         public static float DeltaTime { get; private set; } = 0.0f;
         public static bool PreventTextureMultiThread = false;
 
@@ -87,6 +87,7 @@ namespace Lun
             Clock = new SFML.System.Clock();
             var clock = new SFML.System.Clock();
 
+            var batcher = new Batcher2D();
             while (Running)
             {
                 delta = clock.Restart().AsSeconds();
@@ -116,7 +117,7 @@ namespace Lun
                 ClearColor(BackgroundColor);
 
                 BeginCamera(DefaultCamera);
-                Scene?.Draw();
+                Scene?.Draw(batcher);
                 EndCamera();
 
                 OnDraw?.Invoke();
@@ -139,13 +140,13 @@ namespace Lun
 
         static void CreateWindow()
         {
-            var video = new VideoMode((uint)WindowSize.x, (uint)WindowSize.y);
-            var context = new ContextSettings(32, 8, AntiAliasing);
+            var video = new VideoMode(WindowSize);
+            var context = new ContextSettings(24, 8, AntiAliasing);
             if (!WindowFullscreen)
                 Window = new RenderWindow(video, WindowTitle,
-                    WindowCanResize ? Styles.Close | Styles.Resize : Styles.Close, context);
+                    WindowCanResize ? Styles.Close | Styles.Resize : Styles.Close,State.Windowed, context);
             else
-                Window = new RenderWindow(video, WindowTitle, Styles.Fullscreen, context);
+                Window = new RenderWindow(video, WindowTitle, Styles.Close,State.Fullscreen, context);
 
             Window.SetActive(false);
             Window.SetFramerateLimit(FixedPhysicTime);
@@ -187,7 +188,7 @@ namespace Lun
 
         private static void Window_MouseMoved(object sender, MouseMoveEventArgs e)
         {
-            MousePosition = new Vector2(e.X, e.Y);
+            MousePosition = new Vector2(e.Position.X, e.Position.Y);
             Scene?.MouseMoved(MousePosition);
         }
 
@@ -209,7 +210,7 @@ namespace Lun
 
         private static void Window_Resized(object sender, SizeEventArgs e)
         {
-            bool isUpdate = e.Width < WindowSizeMin.x || e.Height < WindowSizeMin.y;
+            bool isUpdate = e.Size.X < WindowSizeMin.x || e.Size.Y < WindowSizeMin.y;
 
             if (isUpdate)
             {
@@ -232,8 +233,8 @@ namespace Lun
             if (!WindowFullscreen)
             {
                 Window.Close();
-                Window = new RenderWindow(VideoMode.DesktopMode, WindowTitle, Styles.Fullscreen,
-                    new ContextSettings(32, 0, AntiAliasing));
+                Window = new RenderWindow(VideoMode.DesktopMode, WindowTitle, Styles.Close,State.Fullscreen,
+                    new ContextSettings(24, 8, AntiAliasing));
                 Window.SetVerticalSyncEnabled(VerticalSync);
                 HandleEvents();
                 WindowFullscreen = true;

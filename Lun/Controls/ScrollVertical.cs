@@ -15,7 +15,7 @@ namespace Lun.Controls
         public Color BackgroundColor = new Color(50, 54, 76, 240);
         public Color FillColor = Color.White;
         public float Radius = 4f;
-        public uint CornerPoints = 8;
+        public uint CornerPoints = 4;
 
         internal bool _press = false;
         internal static ScrollVertical Current;
@@ -50,19 +50,19 @@ namespace Lun.Controls
             }
         }
 
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
             var gp = GlobalPosition();
             if (Value > Maximum) Value = Maximum;
 
             // Background
-            DrawRoundedRectangle(gp, Size, BackgroundColor, Radius, CornerPoints);
+            batcher.DrawRoundedRectangle(gp, Size, BackgroundColor, Radius, (int)CornerPoints);
 
             float p = 1f / (Maximum + 1);
             float barh = MathF.Max(16f, (Size.y - 2) * p);
             float posY = ((Size.y - 2) - barh) * (Value  / (float)Maximum);
             float y = posY;
-            DrawRoundedRectangle(gp + new Vector2(1, 1 + y), new Vector2(Size.x - 2, barh), FillColor, Radius, CornerPoints);
+            batcher.DrawRoundedRectangle(gp + new Vector2(1, 1 + y), new Vector2(Size.x - 2, barh), FillColor, Radius, (int)CornerPoints);
 
             // Change value
             if (_press)
@@ -72,7 +72,7 @@ namespace Lun.Controls
                 Value = (int)(Maximum * percent2);
             }
 
-            base.Draw();
+            base.Draw(batcher);
         }
 
         internal void InternalMouseScrollWheel(int delta)

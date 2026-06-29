@@ -45,14 +45,19 @@ namespace Lun.Samples._02_Shapes
                     //Color.White,
                     new Vector2(Rand(0, 32), Rand(0, 10)) * 32);
             
-            _vertex = new VertexArray(PrimitiveType.Quads, (uint)count * 4);
+            _vertex = new VertexArray(PrimitiveType.Triangles, (uint)count * 6);
             for (int i = 0; i < count; i++)
             {
                 var index = (uint)i * 4;
-                _vertex[index] = new Vertex(points[i].Item1 + new Vector2(0, 32), points[i].Item2, points[i].Item3 + new Vector2(0, 32));
-                _vertex[index + 1] = new Vertex(points[i].Item1, points[i].Item2, points[i].Item3);
-                _vertex[index + 2] = new Vertex(points[i].Item1 + new Vector2(32, 0), points[i].Item2, points[i].Item3 + new Vector2(32, 0));
-                _vertex[index + 3] = new Vertex(points[i].Item1 + new Vector2(32), points[i].Item2, points[i].Item3 + new Vector2(32));
+                
+                _vertex[index] = new Vertex(points[i].Item1, points[i].Item2, points[i].Item3);
+                _vertex[index + 1] = new Vertex(points[i].Item1 + new Vector2(0, 32), points[i].Item2, points[i].Item3 + new Vector2(0, 32));                
+                _vertex[index + 2] = new Vertex(points[i].Item1 + new Vector2(32), points[i].Item2, points[i].Item3 + new Vector2(32));
+
+                _vertex[index + 3] = _vertex[index];
+                _vertex[index + 4] = _vertex[index + 2];
+                _vertex[index + 5] = new Vertex(points[i].Item1 + new Vector2(32, 0), points[i].Item2, points[i].Item3 + new Vector2(32, 0));
+
             }
             
             var tile1 = new Texture("tile1.png");
@@ -67,7 +72,7 @@ namespace Lun.Samples._02_Shapes
           //  currentRenderStates.Texture = _atlas.GetRenderTexture().Texture;
         }
 
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
              // foreach (var point in points)
              //      DrawRectangle(point.Item1, new Vector2(25), point.Item2);

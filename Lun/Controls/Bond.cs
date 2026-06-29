@@ -40,33 +40,27 @@ namespace Lun.Controls
         /// <returns></returns>
         public T FindControl<T>() where T : ControlBase
             => (forms.Find(i => i is T) as T) ?? controls.Find(i => i is T) as T;
-
-        /// <summary>
-        /// Desenha os controles vinculados
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="states"></param>
-        public override void Draw()
+        
+        public override void Draw(Batcher2D batcher)
         {
-            base.Draw();
+            base.Draw(batcher);
             if (controls.Count > 0)
             {
                 var count = controls.Count;
                 for (int i = 0; i < count; i++)
-                    if (controls[i] is {Visible: true} && controls[i] != priority)
-                       controls[i].Draw();
+                    if (controls[i] is { Visible: true } && controls[i] != priority)
+                        controls[i].Draw(batcher);
             }
 
             if (forms.Count > 0)
             {
                 var count = forms.Count;
                 for (int i = 0; i < count; i++)
-                    if (forms[i] is { Visible:true})
-                        forms[i].Draw();
+                    if (forms[i] is { Visible: true })
+                        forms[i].Draw(batcher);
             }
 
-            priority?.Draw();
-
+            priority?.Draw(batcher);
         }
 
         /// <summary>

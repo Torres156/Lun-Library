@@ -30,11 +30,11 @@ namespace Lun.Controls
         /// <summary>
         /// Desenha o painel
         /// </summary>
-        public override void Draw()
+        public override void Draw(Batcher2D batcher)
         {
-            DrawRoundedRectangle(GlobalPosition(), Size, FillColor, Radius, 8, OutlineThickness, OutlineColor);
+            batcher.DrawRoundedRectangle(GlobalPosition(), Size, FillColor, Radius, 8, OutlineThickness, OutlineColor);
 
-            base.Draw();
+            base.Draw(batcher);
         }
     }
 }

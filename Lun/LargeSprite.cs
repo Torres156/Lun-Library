@@ -14,7 +14,7 @@ namespace Lun
     /// <summary>
     /// By: NetExtLib
     /// </summary>
-    internal class LargeSprite : Transformable, Drawable
+    internal class LargeSprite : Transformable, IDrawable
     {
         #region Variables
         private LargeTexture _currenttexture = null;
@@ -93,7 +93,7 @@ namespace Lun
                 _spritelist[i].Color = _spritecolor;
             }
         }
-        public void Draw(RenderTarget target, RenderStates states)
+        public void Draw(IRenderTarget target, RenderStates states)
         {
             states.Transform *= base.Transform;
             int len = _spritelist.Length;

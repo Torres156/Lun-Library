@@ -124,11 +124,12 @@ namespace Lun.Controls
                        new Vector2(Size.x - 12, 14 * ITEM_DISPLAY));
                 if (area.Contains(Game.MousePosition))
                 {
-                    SelectIndex = hover;
-                    isOpen = false;
-                    Size = new Vector2(Size.x, 0);
-                    Game.Scene.priority = null;
+                    SelectIndex = hover;                    
                 }
+
+                isOpen = false;
+                Size = new Vector2(Size.x, 0);
+                Game.Scene.priority = null;
             }
         }
 
@@ -139,27 +140,28 @@ namespace Lun.Controls
 
             base.AddControl(child);
         }
-
-        public override void Draw()
+      
+        public override void Draw(Batcher2D batcher)
         {
             if (SelectIndex >= Items.Count) SelectIndex = 0;
-           
+
             var gp = GlobalPosition();
-            DrawRoundedRectangle(gp, Size, FillColor, Radius, CornerPoints);
+            batcher.DrawRoundedRectangle(gp, Size, FillColor, Radius, (int)CornerPoints);
 
             if (Items.Count > 0)
             {
                 if (SelectIndex >= 0)
                 {
                     var currentText = Items[SelectIndex];
-                    DrawText(currentText, TextSize, gp + new Vector2(4, 2), TextColor);
+                    batcher.DrawString(currentText, TextSize, gp + new Vector2(4, 2), TextColor);
                 }
                 if (isOpen)
                 {
-                    DrawLineShape(gp + new Vector2(4, HEIGHT), gp + new Vector2(Size.x - 4, HEIGHT), OutlineColor);
+                    batcher.DrawLine(gp + new Vector2(4, HEIGHT), gp + new Vector2(Size.x - 4, HEIGHT), OutlineColor);
 
                     if (Items.Count > ITEM_DISPLAY)
                     {
+                        batcher.End();
                         render = render ?? CreateRender2D((int)Size.x - 12, 14 * ITEM_DISPLAY);
 
                         scrlTop.Visible = true;
@@ -167,33 +169,36 @@ namespace Lun.Controls
                         scrlTop.Velocity = Math.Max(5, scrlTop.Maximum / 100);
                         BeginRender(render);
                         ClearColor(Color.Transparent);
+                        batcher.Begin();
 
+
+                        if (hover >= 0)
+                            batcher.DrawRoundedRectangle(new Vector2(0, 14 * hover - scrlTop.Value), new Vector2(Size.x - 12, 14), FillColor_Hover,
+                                4, 8);
                         for (int i = 0; i < Items.Count; i++)
                         {
                             var y = 14 * i - scrlTop.Value;
                             if (y + 14 >= 0 && y <= render.Size.Y)
                             {
-                                if (i == hover)
-                                    DrawRoundedRectangle(new Vector2(0, 14 * i - scrlTop.Value), new Vector2(Size.x - 12, 14), FillColor_Hover,
-                                        Radius, CornerPoints);
-
-                                DrawText(Items[i], TextSize, new Vector2(2, 14 * i - scrlTop.Value), TextColor);
+                                batcher.DrawString(Items[i], TextSize, new Vector2(2, 14 * i - scrlTop.Value), TextColor);
                             }
                         }
+                        batcher.End();
                         EndRender();
 
-                        DrawRenderTexture(render, gp + new Vector2(2, HEIGHT + 2), Color.White);
+                        batcher.Begin();
+                        batcher.DrawRenderTexture(render, gp + new Vector2(2, HEIGHT + 2), Color.White);                        
                     }
                     else
                     {
                         scrlTop.Visible = false;
+                        if (hover >= 0)
+                            batcher.DrawRoundedRectangle(gp + new Vector2(2, HEIGHT + 2 + 14 * hover), new Vector2(Size.x - 4, 14), FillColor_Hover,
+                                4, 8);
+
                         for (int i = 0; i < Items.Count; i++)
                         {
-                            if (i == hover)
-                                DrawRoundedRectangle(gp + new Vector2(2, HEIGHT + 2 + 14 * i), new Vector2(Size.x - 4, 14), FillColor_Hover,
-                                    Radius, CornerPoints);
-
-                            DrawText(Items[i], TextSize, gp + new Vector2(4, HEIGHT + 2 + 14 * i), TextColor);
+                            batcher.DrawString(Items[i], TextSize, gp + new Vector2(4, HEIGHT + 2 + 14 * i), TextColor);
                         }
                     }
                 }
@@ -203,7 +208,7 @@ namespace Lun.Controls
                     hover = 0;
                 }
             }
-            base.Draw();
+            base.Draw(batcher);
         }
     }
 }

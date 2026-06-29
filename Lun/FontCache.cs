@@ -77,7 +77,7 @@ public class FontCache : IDisposable
         float lineSpacing = _lineSpacing;
         float baselineOffset = lineSpacing - _underlinePosition;
         
-        var _vertices = new Vertex[4 * str.Length];
+        var _vertices = new Vertex[6 * str.Length];
         var index = 0;
 
         for (int i = 0; i < str.Length; i++)
@@ -106,15 +106,23 @@ public class FontCache : IDisposable
             float tw = texRect.Width;
             float th = texRect.Height;
 
+            //batcher.AddQuad(new Vertex(new Vector2(left, top), color, new Vector2(tx, ty)),
+            //                new Vertex(new Vector2(left + bounds.Width, top), color, new Vector2(tx + tw, ty)),
+            //                new Vertex(new Vector2(left + bounds.Width, top + bounds.Height), color, new Vector2(tx + tw, ty + th)),
+            //                new Vertex(new Vector2(left, top + bounds.Height), color, new Vector2(tx, ty + th)));
+
+
             _vertices[index] = new Vertex(new Vector2(left, top), color, new Vector2(tx, ty));
             _vertices[index + 1] = new Vertex(new Vector2(right, top), color, new Vector2(tx + tw, ty));
             _vertices[index + 2] = new Vertex(new Vector2(right, bottom), color, new Vector2(tx + tw, ty + th));
-            _vertices[index + 3] = new Vertex(new Vector2(left, bottom), color, new Vector2(tx, ty + th));
-            index += 4;
+            _vertices[index + 3] = _vertices[index];
+            _vertices[index + 4] = _vertices[index + 2];
+            _vertices[index + 5] = new Vertex(new Vector2(left, bottom), color, new Vector2(tx, ty + th));
+            index += 6;
             x += glyph.Advance;
         }
         
-        currentTarget.Draw(_vertices, 0, (uint)index, PrimitiveType.Quads, _states);
+        currentTarget.Draw(_vertices, 0, (uint)index, PrimitiveType.Triangles, _states);
     }
 
     public void Dispose()

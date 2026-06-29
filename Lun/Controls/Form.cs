@@ -86,32 +86,27 @@ namespace Lun.Controls
         {
 
         }
-
-        /// <summary>
-        /// Desenha o formulario
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="states"></param>
-        public override void Draw()
+        
+        public override void Draw(Batcher2D batcher)
         {
             var gp = GlobalPosition();
 
             // Borda
             if (OutlineThickness != 0)
-                DrawRoundedRectangle(gp, Size, Color.Transparent, Radius, 8, OutlineThickness, OutlineColor);
+                batcher.DrawRoundedRectangleOutline(gp, Size, OutlineColor, Radius, cornerPoint: 8, outlineThickness: OutlineThickness);
 
             // Barra
-            DrawRoundedRectangle(gp, new Vector2(Size.x, BAR_HEIGHT), FillColor_Bar, Radius, 0, 8);
+            batcher.DrawRoundedRectangleAllCorner(gp, new Vector2(Size.x, BAR_HEIGHT), FillColor_Bar, Radius, Radius, 0, 0);
 
             // Fundo
-            DrawRoundedRectangle(gp + new Vector2(0, BAR_HEIGHT), new Vector2(Size.x, Size.y - BAR_HEIGHT), FillColor, 0, Radius, 8);
+            batcher.DrawRoundedRectangleAllCorner(gp + new Vector2(0, BAR_HEIGHT), new Vector2(Size.x, Size.y - BAR_HEIGHT), FillColor,0,0, Radius, Radius);
 
             // Resize
             if (CanResize)
             {
                 var off = Radius != 0 ? Radius : 5;
-                DrawLine(gp + Size - new Vector2(off, 1), gp + Size - new Vector2(1, off), OutlineColor);
-                DrawLine(gp + Size - new Vector2(off + 4, 1), gp + Size - new Vector2(1, off + 4), OutlineColor);
+                batcher.DrawLine(gp + Size - new Vector2(off, 1), gp + Size - new Vector2(1, off), OutlineColor);
+                batcher.DrawLine(gp + Size - new Vector2(off + 4, 1), gp + Size - new Vector2(1, off + 4), OutlineColor);
             }
 
             var currentTitle = Title;
@@ -126,18 +121,19 @@ namespace Lun.Controls
                         realDisplay = currentTitle.Substring(0, i);
                         break;
                     }
-            }
-
-            DrawText(realDisplay, 12, gp + new Vector2(10, 7), Color.White);
+            }            
 
             // Botão de fechar
             if (UseButtonExit)
             {
                 if (hover_exit)
-                    DrawRoundedRectangle(gp + new Vector2(Size.x - 24, 4), new Vector2(20), new Color(255, 255, 255, 40), 4, 4);
-                DrawText("X", 11, gp + new Vector2(Size.x - 24 + (20 - GetTextWidth("X", 11)) / 2, 7), Color.White);
+                    batcher.DrawRoundedRectangle(gp + new Vector2(Size.x - 24, 4), new Vector2(20), new Color(255, 255, 255, 40), 4, cornerPoint: 4);
+                batcher.DrawString("X", 11, gp + new Vector2(Size.x - 24 + (20 - GetTextWidth("X", 11)) / 2, 7), Color.White);
             }
-            base.Draw();
+
+            batcher.DrawString(realDisplay, 12, gp + new Vector2(10, 7), Color.White);
+
+            base.Draw(batcher);
         }
 
         /// <summary>
@@ -244,10 +240,10 @@ namespace Lun.Controls
 
                 var gp = GlobalPosition();
                 if (canDragged)
-                    if (e.X >= gp.x && e.X <= gp.x + Size.x - 24)
-                        if (e.Y >= gp.y && e.Y <= gp.y + BAR_HEIGHT)
+                    if (e.Position.X >= gp.x && e.Position.X <= gp.x + Size.x - 24)
+                        if (e.Position.Y >= gp.y && e.Position.Y <= gp.y + BAR_HEIGHT)
                         {
-                            var mousep = new Vector2(e.X, e.Y) - gp;
+                            var mousep = new Vector2(e.Position.X, e.Position.Y) - gp;
                             Bond?.SetDragForm(this, mousep);
                         }
 

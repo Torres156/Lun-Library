@@ -101,7 +101,7 @@ namespace Lun
             StopMusic();
 
             musicDevice = new SFML.Audio.Music(filePath);
-            musicDevice.Loop = replay;
+            musicDevice.IsLooping = replay;
             musicDevice.Volume = Volume_Music;
             musicDevice.Play();
             cacheMusic = fileName;
