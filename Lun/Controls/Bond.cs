@@ -310,6 +310,16 @@ namespace Lun.Controls
                     i.Resize();
         }
 
+        public override void UpdatePosition()
+        {
+            base.UpdatePosition();
+            foreach (var i in controls)
+                i.UpdatePosition();
+
+            foreach (var i in forms)
+                i.UpdatePosition();
+        }
+
         #endregion
     }
 }

@@ -10,7 +10,15 @@ namespace Lun.Controls
         /// <summary>
         /// Posição
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vector2 Position
+        {
+            get => field;
+            set
+            {
+                field = value;
+                UpdatePosition();
+            }
+        }
 
         /// <summary>
         /// Tamanho
@@ -53,7 +61,7 @@ namespace Lun.Controls
 
         // Delegates
         public delegate void HandleCommon(ControlBase sender);
-        public delegate void HandleDraw(ControlBase sender);
+        public delegate void HandleDraw(ControlBase sender, Batcher2D batcher);
         public delegate void HandleMouseButton(ControlBase sender, MouseButtonEventArgs e);
         public delegate void HandleMouseScrolled(ControlBase sender, MouseWheelScrollEventArgs e);
         public delegate void HandleMouseMove(ControlBase sender, Vector2 e);
@@ -79,11 +87,18 @@ namespace Lun.Controls
             Bond?.AddControl(this);
         }
 
+        Vector2 _globalPosition;
+
         /// <summary>
         /// Posição global
         /// </summary>
         /// <returns></returns>
         public Vector2 GlobalPosition()
+        {
+            return _globalPosition;
+        }
+
+        public virtual void UpdatePosition()
         {
             var pos = Position;
             var bondpos = Bond != null ? Bond.GlobalPosition() : new Vector2();
@@ -92,7 +107,7 @@ namespace Lun.Controls
             if (Bond != null && Bond is Form)
             {
                 bondpos += new Vector2(0, 2 + Form.BAR_HEIGHT);
-                bondsize -= new Vector2(0,4 + Form.BAR_HEIGHT);
+                bondsize -= new Vector2(0, 4 + Form.BAR_HEIGHT);
             }
 
             switch (Anchor)
@@ -154,7 +169,7 @@ namespace Lun.Controls
                     pos.y += Size.y - ComboBox.HEIGHT;
             }
 
-            return pos;
+            _globalPosition = pos;            
         }
 
         /// <summary>
@@ -162,7 +177,7 @@ namespace Lun.Controls
         /// </summary>
         public virtual void Draw(Batcher2D batcher)
         {
-            OnDraw?.Invoke(this);
+            OnDraw?.Invoke(this, batcher);
         }
 
         /// <summary>
@@ -259,7 +274,9 @@ namespace Lun.Controls
             => Visible = !_visible;
 
         public virtual void Resize()
-        { }
+        {
+            UpdatePosition();
+        }
 
         public virtual void Destroy()
         {

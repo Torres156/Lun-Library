@@ -575,6 +575,18 @@ namespace Lun
         public static void DrawCircle(Vector2 position, float radius, Color fillColor) =>
             DrawCircle(position, radius, fillColor, 0, Color.Transparent);
 
+        public static FontCache GetFontCache(int characterSize)
+        {
+            FontCache _font = null;
+            if (!fontCache.TryGetValue((int)characterSize, out _font))
+            {
+                var cache = new FontCache((int)characterSize);
+                fontCache.Add((int)characterSize, cache);
+                _font = cache;
+            }
+            return _font;
+        }
+
         /// <summary>
         /// Comprimento do Texto
         /// </summary>
@@ -589,13 +601,9 @@ namespace Lun
             if (!ignoreBB)
                 text = FilterTextBBColor(text);
 
-            FontCache _font = null; 
-            if (!fontCache.TryGetValue((int)characterSize, out _font))
-            {
-                var cache = new FontCache((int)characterSize);
-                fontCache.Add((int)characterSize, cache);
-                _font = cache;
-            }
+            FontCache _font = GetFontCache((int)characterSize);
+            if (_font == null)
+                return 0;            
 
             return _font.GetTextWidth(text, ignoreBB);
         }
@@ -905,20 +913,18 @@ namespace Lun
             return collection.ToArray();
         }
 
-        static Random random = new Random();
-
         public static int Rand(int min, int max)
         {
             int min_real = Math.Min(min, max);
             int max_real = Math.Max(min, max);
-            return random.Next(min_real, max_real + 1);
+            return Random.Shared.Next(min_real, max_real + 1);
         }
 
         public static long Rand(long min, long max)
         {
             long min_real = Math.Min(min, max);
             long max_real = Math.Max(min, max);
-            return (long)(min_real + (max_real + 1 - min_real) * random.NextDouble());
+            return (long)(min_real + (max_real + 1 - min_real) * Random.Shared.NextDouble());
         }
 
         /// <summary>

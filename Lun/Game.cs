@@ -267,8 +267,9 @@ namespace Lun
         public static void SetScene<T>(params object[] args) where T : SceneBase
         {
             Scene?.UnloadContent();
-            Scene = (T)Activator.CreateInstance(typeof(T), args);
+            Scene = (T)Activator.CreateInstance(typeof(T), args);            
             Scene.LoadContent();
+            Scene.UpdatePosition();
         }
 
         public static T GetScene<T>() where T : SceneBase => (T)Scene;

@@ -499,7 +499,7 @@
           }
         }
       },
-      "LunLibrary/1.6.3": {
+      "LunLibrary/1.6.4": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
@@ -708,7 +708,7 @@
         "sfml.window.nuspec"
       ]
     },
-    "LunLibrary/1.6.3": {
+    "LunLibrary/1.6.4": {
       "type": "project",
       "path": "../Lun/Lun.csproj",
       "msbuildProject": "../Lun/Lun.csproj"
@@ -716,7 +716,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
-      "LunLibrary >= 1.6.3"
+      "LunLibrary >= 1.6.4"
     ]
   },
   "packageFolders": {

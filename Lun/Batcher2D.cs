@@ -160,7 +160,7 @@ public class Batcher2D
         }
     }
 
-    sfTexture getFontTexture(int characterSize)
+    FontCache getFontCache(int characterSize)
     {
         FontCache _font = null;
         if (!fontCache.TryGetValue(characterSize, out _font))
@@ -169,26 +169,24 @@ public class Batcher2D
             fontCache.Add(characterSize, cache);
             _font = cache;
         }
+        return _font;
+    }
 
-        return _font._texture;
+    sfTexture getFontTexture(int characterSize)
+    {
+        return getFontCache(characterSize)._texture;
     }
 
     Glyph[] getFontGlyphs(int characterSize)
     {
-        FontCache _font = null;
-        if (!fontCache.TryGetValue(characterSize, out _font))
-        {
-            var cache = new FontCache(characterSize);
-            fontCache.Add(characterSize, cache);
-            _font = cache;
-        }
-        return _font._glyphs;
+        return getFontCache(characterSize)._glyphs;
     }
 
     public void DrawString(string text, int characterSize, Vector2 position, Color color, bool shadow = false, bool rounded = true)
     {
         var texture = getFontTexture(characterSize);
         var glyphs = getFontGlyphs(characterSize);
+        var cache = getFontCache(characterSize);
 
         if (rounded)
             position = position.ToInt();
@@ -202,8 +200,8 @@ public class Batcher2D
         float x = startX;
         float y = position.y;
 
-        float lineSpacing = gameFont.GetLineSpacing((uint)characterSize);
-        float baselineOffset = lineSpacing - gameFont.GetUnderlinePosition((uint)characterSize);
+        float lineSpacing = cache._lineSpacing;
+        float baselineOffset = lineSpacing - cache._underlinePosition;
 
         for (int i = 0; i < text.Length; i++)
         {
@@ -675,10 +673,133 @@ public class Batcher2D
                 
         batcher.AddQuad(new Vertex(v0, color), new Vertex(v1, color), new Vertex(v2, color), new Vertex(v3, color));      
     }
-    
-    public void DrawRectangle(Vector2 position, Vector2 size, Color fillColor, int outlineThickness = 0, Color outlineColor = default)
+
+    public void DrawRectangleOutline(Vector2 position, Vector2 size, Color outlineColor, int outlineThickness = 1)
     {
-        DrawRoundedRectangleAllCorner(position, size, fillColor, 0, 0, 0, 0, 0, outlineThickness, outlineColor);
+        DrawLine(position, new Vector2(position.x + size.x, position.y), outlineColor, outlineThickness);
+        DrawLine(new Vector2(position.x + size.x, position.y), new Vector2(position.x + size.x, position.y + size.y), outlineColor, outlineThickness);
+        DrawLine(new Vector2(position.x + size.x, position.y + size.y), new Vector2(position.x, position.y + size.y), outlineColor, outlineThickness);
+        DrawLine(new Vector2(position.x, position.y + size.y), position, outlineColor, outlineThickness);
     }
 
+    public void DrawRectangle(Vector2 position, Vector2 size, Color fillColor, int outlineThickness = 0, Color outlineColor = default)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+        Vector2 topLeft = position;
+        Vector2 topRight = new(position.x + size.x, position.y);
+        Vector2 bottomLeft = new(position.x, position.y + size.y);
+        Vector2 bottomRight = new(position.x + size.x, position.y + size.y);
+        batcher.AddQuad(
+            new Vertex(topLeft, fillColor),
+            new Vertex(topRight, fillColor),
+            new Vertex(bottomRight, fillColor),
+            new Vertex(bottomLeft, fillColor)
+        );
+
+        if (outlineThickness > 0)
+        {
+            DrawRectangleOutline(position, size, outlineColor, outlineThickness);
+        }
+    }
+
+    public void DrawGradientRectangle(Vector2 position, Vector2 size, Color topLeftColor, Color topRightColor, Color bottomLeftColor, Color bottomRightColor)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+        Vector2 topLeft = position;
+        Vector2 topRight = new(position.x + size.x, position.y);
+        Vector2 bottomLeft = new(position.x, position.y + size.y);
+        Vector2 bottomRight = new(position.x + size.x, position.y + size.y);
+        batcher.AddQuad(
+            new Vertex(topLeft, topLeftColor),
+            new Vertex(topRight, topRightColor),
+            new Vertex(bottomRight, bottomRightColor),
+            new Vertex(bottomLeft, bottomLeftColor)
+        );
+    }
+
+    public void DrawCircleOutline(Vector2 position, float radius, Color outlineColor, int segments = 32, int outlineThickness = 1)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+        float deltaAngle = (MathF.PI * 2f) / segments;
+        List<Vector2> innerPoints = new();
+        List<Vector2> outerPoints = new();
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = deltaAngle * i;
+            Vector2 innerPoint = new(
+                position.x + MathF.Cos(angle) * radius,
+                position.y + MathF.Sin(angle) * radius);
+            Vector2 outerPoint = new(
+                position.x + MathF.Cos(angle) * (radius + outlineThickness),
+                position.y + MathF.Sin(angle) * (radius + outlineThickness));
+            innerPoints.Add(innerPoint);
+            outerPoints.Add(outerPoint);
+        }
+        for (int i = 0; i < segments; i++)
+        {
+            int next = (i + 1) % segments;
+            batcher.AddQuad(
+                new Vertex(outerPoints[i], outlineColor),
+                new Vertex(outerPoints[next], outlineColor),
+                new Vertex(innerPoints[next], outlineColor),
+                new Vertex(innerPoints[i], outlineColor)
+            );
+        }
+    }
+
+    public void DrawCircle(Vector2 position, float radius, Color fillColor, int segments = 32, int outlineThickness = 0, Color outlineColor = default)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+        float deltaAngle = (MathF.PI * 2f) / segments;
+        List<Vector2> points = new();
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = deltaAngle * i;
+            Vector2 point = new(
+                position.x + MathF.Cos(angle) * radius,
+                position.y + MathF.Sin(angle) * radius);
+            points.Add(point);
+        }
+        for (int i = 0; i < segments; i++)
+        {
+            int next = (i + 1) % segments;
+            batcher.Add(new Vertex(position, fillColor));
+            batcher.Add(new Vertex(points[i], fillColor));
+            batcher.Add(new Vertex(points[next], fillColor));
+        }
+        if (outlineThickness > 0)
+        {
+            DrawCircleOutline(position, radius, outlineColor, segments, outlineThickness);
+        }
+    }
+
+    public void DrawGradientVertical(Vector2 position, Vector2 size, Color topColor, Color bottomColor)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+        Vector2 topLeft = position;
+        Vector2 topRight = new(position.x + size.x, position.y);
+        Vector2 bottomLeft = new(position.x, position.y + size.y);
+        Vector2 bottomRight = new(position.x + size.x, position.y + size.y);
+        batcher.AddQuad(
+            new Vertex(topLeft, topColor),
+            new Vertex(topRight, topColor),
+            new Vertex(bottomRight, bottomColor),
+            new Vertex(bottomLeft, bottomColor)
+        );
+    }
+
+    public void DrawGradientHorizontal(Vector2 position, Vector2 size, Color leftColor, Color rightColor)
+    {
+        var batcher = GetOrCreate(null, PrimitiveType.Triangles);
+        Vector2 topLeft = position;
+        Vector2 topRight = new(position.x + size.x, position.y);
+        Vector2 bottomLeft = new(position.x, position.y + size.y);
+        Vector2 bottomRight = new(position.x + size.x, position.y + size.y);
+        batcher.AddQuad(
+            new Vertex(topLeft, leftColor),
+            new Vertex(topRight, rightColor),
+            new Vertex(bottomRight, rightColor),
+            new Vertex(bottomLeft, leftColor)
+        );
+    }
 }
