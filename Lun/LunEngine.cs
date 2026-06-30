@@ -16,8 +16,8 @@ namespace Lun
     public static class LunEngine
     {
         // Dispositivos
-        static readonly Sprite _sprite = null;
-        static readonly LargeSprite _spritelarge = new LargeSprite();
+        static Sprite _sprite = null;
+        static LargeSprite _spritelarge = new LargeSprite();
         static readonly RectangleShape rec = new RectangleShape();
         static readonly CircleShape cir = new CircleShape();
         static readonly RoundedRectangleShape roundrec = new RoundedRectangleShape();
@@ -73,7 +73,7 @@ namespace Lun
             if (texture.type == TextureTypes.Normal)
             {
                 var scale = destination.size / source.size;
-
+                _sprite ??= new Sprite(texture.GetTexture());
                 _sprite.Texture = texture.GetTexture();
                 _sprite.Position = destination.position.Round();
                 _sprite.Scale = scale;
@@ -86,7 +86,7 @@ namespace Lun
             else
             {
                 var scale = destination.size / source.size;
-
+                _spritelarge ??= new LargeSprite(texture.GetLargeTexture());
                 _spritelarge.Texture = texture.GetLargeTexture();
                 _spritelarge.Position = destination.position.Round();
                 _spritelarge.Scale = scale;
@@ -169,6 +169,7 @@ namespace Lun
         public static void DrawRenderTexture(RenderTexture render, Vector2 position, Color color)
         {
             render.Texture.Smooth = true;
+            _sprite ??= new Sprite(render.Texture);
             _sprite.Texture = render.Texture;
             _sprite.Position = position;
             _sprite.Scale = Vector2.One;

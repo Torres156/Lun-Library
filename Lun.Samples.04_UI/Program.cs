@@ -19,7 +19,7 @@ namespace Lun.Samples._04_UI
             Game.WindowCanResize = true;                  // Window can resized
             Game.BackgroundColor = Color.Black;           // Clear Background Color
             Game.FixedPhysicTime = 0;
-            Game.AntiAliasing = 0;
+            Game.AntiAliasing = 8;
 
             // Opening Scene
             Game.SetScene<StartScene>();
@@ -39,6 +39,7 @@ namespace Lun.Samples._04_UI
         Form formSample2;
         CheckButton checkSample;
         TabControl tabSample;
+        CheckBox checkBox;
 
         TextBox txtSample;
 
@@ -111,7 +112,13 @@ namespace Lun.Samples._04_UI
                 MaxLength = 10,
             };
             txtSample.AddSuggestion("Numbers", "Numeric", "Only numbers");
-            txtSample.AddSuggestion("Number", "Numeric", "Only numbers");            
+            txtSample.AddSuggestion("Number", "Numeric", "Only numbers");
+
+            checkBox = new CheckBox(this)
+            {
+                Size = new Vector2(100, 20),
+                Position = new Vector2(200, 50),                
+            };
         }
 
         public override void Draw(Batcher2D batcher)

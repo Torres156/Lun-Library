@@ -14,7 +14,7 @@ namespace Lun.Controls
         // Design
         public Color BackgroundColor = new Color(50, 54, 76, 240);
         public Color FillColor = Color.White;
-        public float Radius = 4f;
+        public float Radius = 2f;
         public uint CornerPoints = 4;
 
         internal bool _press = false;

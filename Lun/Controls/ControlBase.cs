@@ -3,7 +3,7 @@ namespace Lun.Controls
 {
     using SFML.Window;
     public abstract class ControlBase
-    { 
+    {
         #region Properties
         public string Name = "";
 
@@ -15,15 +15,29 @@ namespace Lun.Controls
             get => field;
             set
             {
-                field = value;
-                UpdatePosition();
+                if (field != value)
+                {
+                    field = value;
+                    UpdatePosition();
+                }
             }
         }
 
         /// <summary>
         /// Tamanho
         /// </summary>
-        public Vector2 Size;
+        public Vector2 Size
+        {
+            get => field;
+            set
+            {
+                if (field != value)
+                {
+                    field = value;
+                    UpdatePosition();
+                }
+            }
+        }
 
         /// <summary>
         /// Ancora
@@ -169,7 +183,7 @@ namespace Lun.Controls
                     pos.y += Size.y - ComboBox.HEIGHT;
             }
 
-            _globalPosition = pos;            
+            _globalPosition = pos;
         }
 
         /// <summary>

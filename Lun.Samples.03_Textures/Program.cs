@@ -53,6 +53,9 @@ namespace Lun.Samples._03_Textures
             batcher.DrawTexture(Background, new Rectangle(Vector2.Zero, Game.WindowSize), Color.White);
             batcher.DrawString("Lun Library", 12, new Vector2(20, 20), Color.White);
             batcher.DrawString("FPS: " + Game.FPS, 12, new Vector2(20, 60), Color.White);            
+
+            batcher.DrawRectangle(new Vector2(20, 100), new Vector2(200, 100), Color.Red, 5, new Color(255, 255, 255, 100));
+        
             batcher.End();
 
             DrawText("Batch Count: " + batcher.Count, 12, new Vector2(20, 40), Color.White);

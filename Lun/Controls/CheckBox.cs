@@ -47,9 +47,9 @@ namespace Lun.Controls
             var gp = GlobalPosition();
 
             if (Radius > 0)
-                batcher.DrawRoundedRectangle(gp, Size, FillColor, Radius, PointCount, -1, OutlineColor);
+                batcher.DrawRoundedRectangle(gp + Vector2.One, Size - new Vector2(2, 2), FillColor, Radius, PointCount, 1, OutlineColor);
             else
-                batcher.DrawRectangle(gp, Size, FillColor, -1, OutlineColor);
+                batcher.DrawRectangle(gp + Vector2.One, Size - new Vector2(2, 2), FillColor, 1, OutlineColor);
 
             if (Checked)
                 if (Radius > 0)

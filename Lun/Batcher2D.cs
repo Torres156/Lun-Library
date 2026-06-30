@@ -530,92 +530,74 @@ public class Batcher2D
 
     public void DrawRoundedRectangleOutlineAllCorner(Vector2 position, Vector2 size, Color outlineColor, float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, int cornerPoint = 8, int outlineThickness = 1)
     {
+        position = position.Floor();
+        size = size.Floor();
+
         var batcher = GetOrCreate(null, PrimitiveType.Triangles);
 
-        float deltaAngle = 90f / (cornerPoint - 1);
+        // Usando Radianos diretamente para evitar conversões repetidas
+        float deltaAngle = (MathF.PI * 0.5f) / (cornerPoint - 1);
 
         List<Vector2> inner = new();
         List<Vector2> outer = new();
 
-        void AddCorner(Vector2 center, float startAngle, float radius)
+        void AddCorner(Vector2 center, float startAngleRad, float radius)
         {
-            if (radius <= 0)
-            {
-                Vector2 p;
-                Vector2 dir;
-
-                switch ((int)startAngle)
-                {
-                    case 0: // TR
-                        p = new(position.x + size.x, position.y);
-                        dir = Vector2.Normalize(new Vector2(1, -1));
-                        break;
-
-                    case 90: // TL
-                        p = new(position.x, position.y);
-                        dir = Vector2.Normalize(new Vector2(-1, -1));
-                        break;
-
-                    case 180: // BL
-                        p = new(position.x, position.y + size.y);
-                        dir = Vector2.Normalize(new Vector2(-1, 1));
-                        break;
-
-                    default: // BR
-                        p = new(position.x + size.x, position.y + size.y);
-                        dir = Vector2.Normalize(new Vector2(1, 1));
-                        break;
-                }
-
-                inner.Add(p);
-                outer.Add(p + dir * outlineThickness);
-
-                return;
-            }
+            // Mesmo se o raio for 0, rodamos o loop para gerar os pontos de quina necessários
+            float r = MathF.Max(0f, radius);
 
             for (int i = 0; i < cornerPoint; i++)
             {
-                float angle = (startAngle + deltaAngle * i) * MathF.PI / 180f;
+                float angle = startAngleRad + (deltaAngle * i);
 
-                Vector2 dir = new(
-                MathF.Cos(angle),
-                -MathF.Sin(angle));
+                // No SFML, Y para baixo: Cos é X, Sin é Y.
+                Vector2 dir = new(MathF.Cos(angle), MathF.Sin(angle));
 
-                inner.Add(center + dir * radius);
-                outer.Add(center + dir * (radius + outlineThickness));
+                // Se o raio for zero, o 'inner' será exatamente o 'center' (a quina viva).
+                // O 'outer' vai expandir perfeitamente na direção do ângulo criando o chanfro/quina externa.
+                inner.Add(center + (dir * r));
+                outer.Add(center + (dir * (r + outlineThickness)));
             }
         }
 
+        // SEGUIDO A ORDEM HORÁRIA (Igual ao preenchimento para os loops casarem perfeitamente)
+
+        // 1. TR (Top-Right): Ângulo de -90° a 0° (-PI/2 a 0)
         AddCorner(
             new(position.x + size.x - topRightRadius, position.y + topRightRadius),
-            0,
+            -MathF.PI * 0.5f,
             topRightRadius);
 
-        AddCorner(
-            new(position.x + topLeftRadius, position.y + topLeftRadius),
-            90,
-            topLeftRadius);
-
-        AddCorner(
-            new(position.x + bottomLeftRadius, position.y + size.y - bottomLeftRadius),
-            180,
-            bottomLeftRadius);
-
+        // 2. BR (Bottom-Right): Ângulo de 0° a 90° (0 a PI/2)
         AddCorner(
             new(position.x + size.x - bottomRightRadius, position.y + size.y - bottomRightRadius),
-            270,
+            0f,
             bottomRightRadius);
 
+        // 3. BL (Bottom-Left): Ângulo de 90° a 180° (PI/2 a PI)
+        AddCorner(
+            new(position.x + bottomLeftRadius, position.y + size.y - bottomLeftRadius),
+            MathF.PI * 0.5f,
+            bottomLeftRadius);
+
+        // 4. TL (Top-Left): Ângulo de 180° a 270° (PI a 3PI/2)
+        AddCorner(
+            new(position.x + topLeftRadius, position.y + topLeftRadius),
+            MathF.PI,
+            topLeftRadius);
+
+        // Desenha o contorno conectando as duas tiras de pontos (Inner e Outer)
         for (int i = 0; i < inner.Count; i++)
         {
             int next = (i + 1) % inner.Count;
 
+            // Garanta que a ordem dos vértices no AddQuad respeite o Backface Culling do seu motor/SFML
             batcher.AddQuad(
                 new Vertex(outer[i], outlineColor),
                 new Vertex(outer[next], outlineColor),
                 new Vertex(inner[next], outlineColor),
                 new Vertex(inner[i], outlineColor)
-            );         
+            );
         }
     }
 
@@ -626,6 +608,10 @@ public class Batcher2D
 
     public void DrawRoundedRectangleAllCorner(Vector2 position, Vector2 size, Color fillColor, float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius, int cornerPoint = 8, int outlineThickness = 0, Color outlineColor = default)
     {
+        position = position.Floor();
+        size = size.Floor();
+
+        // O batcher espera triângulos isolados (3 vértices por triângulo)
         var batcher = GetOrCreate(null, PrimitiveType.Triangles);
 
         var points = BuildRoundedRectPoints(
@@ -636,15 +622,27 @@ public class Batcher2D
         if (points.Count < 3)
             return;
 
-        for (int i = 1; i < points.Count - 1; i++)
+        // Criamos um ponto central para servir de âncora.
+        // Isso distribui os triângulos perfeitamente como fatias de pizza,
+        // eliminando artefatos e problemas de arredondamento nos cantos.
+        Vector2 center = new(position.x + (size.x * 0.5f), position.y + (size.y * 0.5f));
+
+        for (int i = 0; i < points.Count; i++)
         {
-            batcher.Add(new Vertex(points[0], fillColor));
-            batcher.Add(new Vertex(points[i], fillColor));
-            batcher.Add(new Vertex(points[i + 1], fillColor));
+            Vector2 p1 = points[i];
+            // O operador % garante que o último ponto feche o circuito com o primeiro
+            Vector2 p2 = points[(i + 1) % points.Count];
+
+            // Adiciona os 3 vértices que formam UM triângulo isolado
+            batcher.Add(new Vertex(center, fillColor));
+            batcher.Add(new Vertex(p1, fillColor));
+            batcher.Add(new Vertex(p2, fillColor));
         }
 
-        if (outlineThickness > 0)        
-            DrawRoundedRectangleOutlineAllCorner(position, size, outlineColor, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, cornerPoint, outlineThickness);        
+        if (outlineThickness > 0)
+        {
+            DrawRoundedRectangleOutlineAllCorner(position, size, outlineColor, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, cornerPoint, outlineThickness);
+        }
     }
 
     public void DrawRoundedRectangle(Vector2 position, Vector2 size, Color fillColor, float radius, int cornerPoint = 8, int outlineThickness = 0, Color outlineColor = default)
@@ -657,29 +655,42 @@ public class Batcher2D
         var batcher = GetOrCreate(null, PrimitiveType.Triangles);
 
         Vector2 direction = end - start;
-
-        if (direction.LengthSquared() <= 0.000001f)
+        if (direction.LengthSquared() <= 0.0001f)
             return;
 
         direction.Normalize();
 
-        Vector2 normal = new(-direction.y, direction.x);
+        // --- TRUQUE DO PIXEL SNAPPING ---
+        // Se a linha for puramente horizontal ou vertical, alinhar os pontos de início/fim
+        // evita que o AA do SFML tente "adivinhar" e engrossele a linha.
+        if (start.x == end.x || start.y == end.y)
+        {
+            start = new Vector2(MathF.Floor(start.x) + 0.5f, MathF.Floor(start.y) + 0.5f);
+            end = new Vector2(MathF.Floor(end.x) + 0.5f, MathF.Floor(end.y) + 0.5f);
+        }
+
+        Vector2 normal = new Vector2(-direction.y, direction.x);
         normal *= thickness * 0.5f;
 
         Vector2 v0 = start + normal;
         Vector2 v1 = start - normal;
         Vector2 v2 = end + normal;
         Vector2 v3 = end - normal;
-                
-        batcher.AddQuad(new Vertex(v0, color), new Vertex(v1, color), new Vertex(v2, color), new Vertex(v3, color));      
+
+        batcher.AddQuad(
+            new Vertex(v0, color),
+            new Vertex(v1, color),
+            new Vertex(v3, color),
+            new Vertex(v2, color)
+        );
     }
 
     public void DrawRectangleOutline(Vector2 position, Vector2 size, Color outlineColor, int outlineThickness = 1)
     {
-        DrawLine(position, new Vector2(position.x + size.x, position.y), outlineColor, outlineThickness);
-        DrawLine(new Vector2(position.x + size.x, position.y), new Vector2(position.x + size.x, position.y + size.y), outlineColor, outlineThickness);
-        DrawLine(new Vector2(position.x + size.x, position.y + size.y), new Vector2(position.x, position.y + size.y), outlineColor, outlineThickness);
-        DrawLine(new Vector2(position.x, position.y + size.y), position, outlineColor, outlineThickness);
+        DrawRectangle(new Vector2(position.x - outlineThickness, position.y - outlineThickness), new Vector2(size.x + outlineThickness * 2, outlineThickness), outlineColor);
+        DrawRectangle(new Vector2(position.x - outlineThickness, position.y + size.y), new Vector2(size.x + outlineThickness * 2, outlineThickness), outlineColor);
+        DrawRectangle(new Vector2(position.x - outlineThickness, position.y), new Vector2(outlineThickness, size.y), outlineColor);
+        DrawRectangle(new Vector2(position.x + size.x, position.y), new Vector2(outlineThickness, size.y), outlineColor);
     }
 
     public void DrawRectangle(Vector2 position, Vector2 size, Color fillColor, int outlineThickness = 0, Color outlineColor = default)

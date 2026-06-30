@@ -161,26 +161,28 @@ namespace Lun.Controls
 
                 pointOriginResize = gp + Size - new Vector2(off + 4, off + 4);
 
+                var size = Size;
                 if (SizeMinimum.x > 0)
-                    Size.x = Math.Max(SizeMinimum.x, Size.x);
+                    size.x = Math.Max(SizeMinimum.x, Size.x);
                 else
-                    Size.x = Math.Max(BAR_HEIGHT, Size.x);
+                    size.x = Math.Max(BAR_HEIGHT, Size.x);
 
                 if (SizeMinimum.y > 0)
-                    Size.y = Math.Max(SizeMinimum.y, Size.y);
+                    size.y = Math.Max(SizeMinimum.y, Size.y);
                 else
-                    Size.y = Math.Max(BAR_HEIGHT + 1, Size.y);
+                    size.y = Math.Max(BAR_HEIGHT + 1, Size.y);
 
                 if (SizeMaximum.x > 0)
-                    Size.x = Math.Min(Size.x, SizeMaximum.x);
+                    size.x = Math.Min(Size.x, SizeMaximum.x);
                 else
-                    Size.x = Math.Min(Size.x, Game.WindowSize.x);
+                    size.x = Math.Min(Size.x, Game.WindowSize.x);
 
                 if (SizeMaximum.y > 0)
-                    Size.y = Math.Min(Size.y, SizeMaximum.y);
+                    size.y = Math.Min(Size.y, SizeMaximum.y);
                 else
-                    Size.y = Math.Min(Size.y, Game.WindowSize.y);
+                    size.y = Math.Min(Size.y, Game.WindowSize.y);
 
+                Size = size;
                 return true;
             }
 
